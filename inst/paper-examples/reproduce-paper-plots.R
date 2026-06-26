@@ -12,7 +12,7 @@
 # To use locally regenerated paper outputs instead, pass paper_dir explicitly.
 
 bundled_paper_dir <- function() {
-  system.file("extdata/paper", package = "causalcp", mustWork = TRUE)
+  causalcp::paper_data_dir()
 }
 
 load_cp_dataframe <- function(file) {

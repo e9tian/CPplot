@@ -153,7 +153,28 @@ from the bundled paper intermediate outputs using the package API. These are
 the intermediate files needed for the CP-plot figures, not the full raw-data
 analysis workflow.
 
-After installing `causalcp`, run:
+Part 1 shows which bundled paper datasets are available and how to load them.
+Use `paper_datasets()` as the index of datasets and loader functions:
+
+```r
+library(causalcp)
+
+paper_datasets()[, c("name", "type", "loader")]
+
+rhc <- load_paper_cp_data("rhc")
+head(rhc[, c("propensity_scores", "tau_hat", attr(rhc, "treatment_column"))])
+
+k401 <- load_paper_401k_data()
+head(k401[, c("ehat", "Z", "delta_d", "tau_c_hat")])
+```
+
+`load_paper_cp_data(setting)` loads one observational CP-plot intermediate
+dataset, where `setting` is one of the observational names returned by
+`paper_datasets()`. `load_paper_401k_data()` loads the intermediate dataset for
+the 401(k) local CP plot.
+
+Part 2 reproduces the paper demo plots from those bundled intermediate
+datasets:
 
 ```r
 library(causalcp)
