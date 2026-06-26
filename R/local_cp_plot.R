@@ -64,12 +64,16 @@ local_cp_plot <- function(data, ehat, tau_c_hat, pi_c_hat, group = NULL,
     ggplot2::theme_minimal() +
     ggplot2::theme(
       legend.position = "bottom",
-      legend.box = "vertical"
+      legend.box = "horizontal",
+      legend.text = ggplot2::element_text(size = 8),
+      legend.title = ggplot2::element_text(size = 9),
+      legend.key.width = grid::unit(0.7, "cm"),
+      legend.spacing.x = grid::unit(0.08, "cm")
     ) +
     ggplot2::guides(
       shape = ggplot2::guide_legend(order = 1, override.aes = list(alpha = 1, size = 2)),
-      color = ggplot2::guide_legend(order = 2, ncol = 1),
-      linetype = ggplot2::guide_legend(order = 2, ncol = 1)
+      color = ggplot2::guide_legend(order = 2, nrow = 1),
+      linetype = ggplot2::guide_legend(order = 2, nrow = 1)
     ) +
     ggplot2::geom_hline(yintercept = 0, linetype = "solid", color = "black", alpha = 0.7)
 

@@ -172,7 +172,7 @@ make_401k_local_cp_plot <- function(paper_dir, output_dir) {
   )
 
   pdf_file <- file.path(output_dir, "fig_401k_unit_conditional_wald_causalcp.pdf")
-  ggplot2::ggsave(pdf_file, fit$plot, width = 7, height = 5)
+  ggplot2::ggsave(pdf_file, fit$plot, width = 8.5, height = 5)
 
   slopes_file <- file.path(output_dir, "fig_401k_unit_conditional_wald_causalcp_slopes.csv")
   utils::write.csv(fit$slopes, slopes_file, row.names = FALSE)
