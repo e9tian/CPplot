@@ -88,16 +88,40 @@ fit$slopes
 
 ## Basic Estimation Helpers
 
-The package includes simple transparent helpers for quick examples:
+The package includes simple transparent helpers for quick examples. The code
+blocks below are self-contained and can be copied directly into R.
 
 ```r
+library(causalcp)
+
+set.seed(3)
+n <- 500
+df <- data.frame(x1 = rnorm(n), x2 = rnorm(n))
+df$z <- rbinom(n, 1, plogis(-0.3 + 0.9 * df$x1 - 0.4 * df$x2))
+df$y <- 1 + 0.5 * df$x1 + 0.4 * df$x2 +
+  df$z * (0.5 + 0.8 * df$x1 - 0.5 * df$x2) +
+  rnorm(n, sd = 0.8)
+
 df2 <- estimate_cp_inputs(df, y = "y", z = "z", x = c("x1", "x2"))
+
 fit <- cp_plot(df2, ehat = "ehat", tau_hat = "tau_hat", treat = "z")
+fit$plot
+fit$slopes
 ```
 
 For IV examples:
 
 ```r
+library(causalcp)
+
+set.seed(4)
+n <- 800
+df <- data.frame(x1 = rnorm(n), x2 = rnorm(n))
+df$z <- rbinom(n, 1, plogis(-0.2 + 0.8 * df$x1 + 0.4 * df$x2))
+df$d <- rbinom(n, 1, plogis(-0.8 + 1.2 * df$z + 0.4 * df$x1 - 0.2 * df$x2))
+tau <- 0.6 + 1.0 * df$x1 - 0.4 * df$x2
+df$y <- 1 + 0.4 * df$x1 - 0.2 * df$x2 + tau * df$d + rnorm(n, sd = 0.6)
+
 df2 <- estimate_local_cp_inputs(
   df,
   y = "y",
@@ -105,6 +129,7 @@ df2 <- estimate_local_cp_inputs(
   z = "z",
   x = c("x1", "x2")
 )
+
 fit <- local_cp_plot(
   df2,
   ehat = "ehat",
@@ -112,6 +137,8 @@ fit <- local_cp_plot(
   pi_c_hat = "pi_c_hat",
   group = "z"
 )
+fit$plot
+fit$slopes
 ```
 
 These helpers use logistic regression for propensity scores and linear models
