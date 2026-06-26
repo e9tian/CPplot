@@ -162,7 +162,8 @@ library(causalcp)
 paper_datasets()[, c("name", "type", "loader")]
 
 rhc <- load_paper_cp_data("rhc")
-head(rhc[, c("propensity_scores", "tau_hat", attr(rhc, "treatment_column"))])
+rhc_treat_col <- attr(rhc, "treatment_column")
+head(rhc[, c("propensity_scores", "tau_hat", rhc_treat_col)])
 
 k401 <- load_paper_401k_data()
 head(k401[, c("ehat", "Z", "delta_d", "tau_c_hat")])
