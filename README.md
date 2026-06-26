@@ -130,9 +130,11 @@ or other models and then pass the resulting columns to the plotting functions.
 ## Paper Demo
 
 The package includes a script showing how the paper figures can be generated
-from existing analysis outputs using the package API.
+from the bundled paper intermediate outputs using the package API. These are
+the intermediate files needed for the CP-plot figures, not the full raw-data
+analysis workflow.
 
-From the paper analysis directory, run:
+After installing `causalcp`, run:
 
 ```r
 library(causalcp)
@@ -142,16 +144,8 @@ source(system.file(
   package = "causalcp"
 ))
 
-paper_dir <- getwd()
-
-reproduce_paper_plots(
-  paper_dir = paper_dir,
-  output_dir = file.path(paper_dir, "paper_demo_outputs")
-)
+reproduce_paper_plots()
 ```
-
-If you are running R from another directory, set `paper_dir` to your local path
-to the paper analysis folder before calling `reproduce_paper_plots()`.
 
 This creates package-based versions of:
 
@@ -159,8 +153,20 @@ This creates package-based versions of:
 - the 401(k) local CP plot,
 - CSV files containing the corresponding slope diagnostics.
 
-The demo expects the paper analysis outputs to exist, including `res_data/` and
-`tab_401k_unit_conditional_wald.csv`.
+The outputs are written to `paper_demo_outputs/` in the current working
+directory.
+
+If you locally regenerate the paper analysis outputs and want to use those
+instead of the bundled copies, pass `paper_dir` explicitly:
+
+```r
+paper_dir <- "/path/to/your/paper-analysis-directory"
+
+reproduce_paper_plots(
+  paper_dir = paper_dir,
+  output_dir = file.path(paper_dir, "paper_demo_outputs")
+)
+```
 
 ## Citation
 

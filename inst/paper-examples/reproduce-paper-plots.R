@@ -1,16 +1,19 @@
 # Reproduce paper diagnostic plots with causalcp.
 #
-# This script expects the paper analysis outputs to already exist:
+# By default, this script uses the paper intermediate outputs bundled with the
+# package:
 # - res_data/*_data.RData
 # - tab_401k_unit_conditional_wald.csv
 #
 # Example:
 # source(system.file("paper-examples/reproduce-paper-plots.R", package = "causalcp"))
-# paper_dir <- getwd()
-# reproduce_paper_plots(
-#   paper_dir = paper_dir,
-#   output_dir = file.path(paper_dir, "paper_demo_outputs")
-# )
+# reproduce_paper_plots()
+#
+# To use locally regenerated paper outputs instead, pass paper_dir explicitly.
+
+bundled_paper_dir <- function() {
+  system.file("extdata/paper", package = "causalcp", mustWork = TRUE)
+}
 
 load_cp_dataframe <- function(file) {
   env <- new.env(parent = emptyenv())
@@ -177,8 +180,8 @@ make_401k_local_cp_plot <- function(paper_dir, output_dir) {
   list(plot_file = pdf_file, slopes_file = slopes_file, slopes = fit$slopes)
 }
 
-reproduce_paper_plots <- function(paper_dir = getwd(),
-                                  output_dir = file.path(paper_dir, "paper_demo_outputs")) {
+reproduce_paper_plots <- function(paper_dir = bundled_paper_dir(),
+                                  output_dir = file.path(getwd(), "paper_demo_outputs")) {
   paper_dir <- normalizePath(paper_dir, mustWork = TRUE)
   if (!dir.exists(output_dir)) {
     dir.create(output_dir, recursive = TRUE)
