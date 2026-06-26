@@ -14,19 +14,11 @@ their own preferred models.
 
 ## Installation
 
-This repository is currently private. After accepting the GitHub collaborator
-invitation, install from R with either GitHub credentials or SSH access.
+Install from GitHub:
 
 ```r
 install.packages("remotes")
 remotes::install_github("e9tian/causalcp")
-```
-
-If the repository is private and `install_github()` cannot authenticate, install
-through SSH instead:
-
-```r
-remotes::install_git("git@github.com:e9tian/causalcp.git")
 ```
 
 ## Observational CP Plot
@@ -38,11 +30,11 @@ score \(\hat e(X)\) and CATE \(\hat\tau(X)\) for each unit.
 library(causalcp)
 
 set.seed(1)
-n <- 300
-df <- data.frame(x = rnorm(n))
-df$z <- rbinom(n, 1, plogis(df$x))
-df$ehat <- plogis(df$x)
-df$tau_hat <- 1 + df$x
+n <- 800
+df <- data.frame(x1 = rnorm(n), x2 = rnorm(n))
+df$ehat <- plogis(-0.4 + 1.1 * df$x1)
+df$z <- rbinom(n, 1, plogis(-0.6 + 1.1 * df$x1 + 1.0 * df$x2))
+df$tau_hat <- 0.2 + 2.0 * df$ehat + 1.3 * df$x2 + rnorm(n, sd = 0.35)
 
 fit <- cp_plot(
   df,
@@ -75,12 +67,12 @@ CP plot uses \(\widehat\Delta_D(X)\) as the weight.
 
 ```r
 set.seed(2)
-n <- 300
-df <- data.frame(x = rnorm(n))
-df$z <- rbinom(n, 1, plogis(df$x))
-df$ehat <- plogis(df$x)
-df$pi_c_hat <- pmax(0.05, plogis(-0.5 + df$x))
-df$tau_c_hat <- 1 + 0.5 * df$x
+n <- 800
+df <- data.frame(x1 = rnorm(n), x2 = rnorm(n))
+df$ehat <- plogis(-0.3 + 1.0 * df$x1)
+df$z <- rbinom(n, 1, plogis(-0.5 + 1.0 * df$x1 + 1.1 * df$x2))
+df$pi_c_hat <- pmax(0.05, plogis(-0.2 + 0.7 * df$x1 - 0.3 * df$x2))
+df$tau_c_hat <- 0.4 + 2.4 * df$ehat + 1.5 * df$x2 + rnorm(n, sd = 0.45)
 
 fit <- local_cp_plot(
   df,
