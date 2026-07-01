@@ -8,6 +8,8 @@ It is developed for the paper:
 
 Paper link: <https://arxiv.org/abs/2606.11715>
 
+Tutorial website: <https://e9tian.github.io/CPplot/>
+
 The package is intentionally plot-first. Its main functions assume that users
 have already estimated propensity scores and treatment effects, possibly using
 their own preferred models.
