@@ -4,8 +4,15 @@
   <img src="docs/assets/cpplot-logo-square-white.png" alt="CPplot logo" width="360">
 </p>
 
-`CPplot` draws CP plots and local CP plots for causal diagnostic summaries.
-It is developed for the paper:
+`CPplot` implements CP-plots, which plot estimated conditional average
+treatment effects against estimated propensity scores. Motivated by covariance
+representations for weighted average treatment effects, these plots summarize
+how treatment-effect heterogeneity varies with treatment propensity and help
+diagnose bracketing relationships among weighted causal estimands. The package
+also implements local CP-plots for instrumental-variable analyses of weighted
+local average treatment effects.
+
+Reference:
 
 > Pengfei Tian, Fan Yang, and Peng Ding. "Bracketing Relationships of Weighted
 > Average Treatment Effects." arXiv:2606.11715.
@@ -14,9 +21,8 @@ Paper link: <https://arxiv.org/abs/2606.11715>
 
 Tutorial website: <https://e9tian.github.io/CPplot/>
 
-The package is intentionally plot-first. Its main functions assume that users
-have already estimated propensity scores and treatment effects, possibly using
-their own preferred models.
+The main plotting functions assume that users have already estimated propensity
+scores and treatment effects, possibly using their own preferred models.
 
 ## Installation
 
