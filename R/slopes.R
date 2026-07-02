@@ -38,13 +38,13 @@ fit_slope <- function(data, weights = NULL, label) {
   out
 }
 
-cp_slopes <- function(data, ehat, tau_hat, treat = NULL) {
-  e <- col_data(data, ehat, "ehat")
+cp_slopes <- function(data, e_hat, tau_hat, treatment = NULL) {
+  e <- col_data(data, e_hat, "e_hat")
   tau <- col_data(data, tau_hat, "tau_hat")
-  z <- col_data(data, treat, "treat")
+  z <- col_data(data, treatment, "treatment")
   ok <- finite_complete(e, tau)
   if (!is.null(z)) {
-    validate_binary_indicator(z, arg = "treat")
+    validate_binary_indicator(z, arg = "treatment")
     ok <- ok & is.finite(z)
   }
 
@@ -66,8 +66,8 @@ cp_slopes <- function(data, ehat, tau_hat, treat = NULL) {
   out
 }
 
-local_cp_slopes <- function(data, ehat, tau_c_hat, pi_c_hat, group = NULL) {
-  e <- col_data(data, ehat, "ehat")
+local_cp_slopes <- function(data, e_hat, tau_c_hat, pi_c_hat, group = NULL) {
+  e <- col_data(data, e_hat, "e_hat")
   tau <- col_data(data, tau_c_hat, "tau_c_hat")
   pi_c <- col_data(data, pi_c_hat, "pi_c_hat")
   z <- col_data(data, group, "group")

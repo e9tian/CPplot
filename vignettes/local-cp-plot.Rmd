@@ -13,18 +13,19 @@ library(CPplot)
 set.seed(2)
 n <- 800
 df <- data.frame(x1 = rnorm(n), x2 = rnorm(n))
-df$ehat <- plogis(-0.3 + 1.0 * df$x1)
+df$e_hat <- plogis(-0.3 + 1.0 * df$x1)
 df$z <- rbinom(n, 1, plogis(-0.5 + 1.0 * df$x1 + 1.1 * df$x2))
 df$pi_c_hat <- pmax(0.05, plogis(-0.2 + 0.7 * df$x1 - 0.3 * df$x2))
-df$tau_c_hat <- 0.4 + 2.4 * df$ehat + 1.5 * df$x2 + rnorm(n, sd = 0.45)
+df$tau_c_hat <- 0.4 + 2.4 * df$e_hat + 1.5 * df$x2 + rnorm(n, sd = 0.45)
 
 fit <- local_cp_plot(
   df,
-  ehat = "ehat",
+  e_hat = "e_hat",
   tau_c_hat = "tau_c_hat",
   pi_c_hat = "pi_c_hat",
   group = "z"
 )
 fit$plot
 fit$slopes
+fit$bracketing
 ```

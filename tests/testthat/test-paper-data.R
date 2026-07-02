@@ -14,6 +14,7 @@ test_that("load_paper_cp_data loads observational setting data", {
 
 test_that("load_paper_401k_data loads local IV data", {
   k401 <- load_paper_401k_data()
-  expect_true(all(c("ehat", "Z", "delta_d", "tau_c_hat") %in% names(k401)))
+  expect_true(all(c("e_hat", "Z", "delta_d", "tau_c_hat") %in% names(k401)))
+  expect_false("ehat" %in% names(k401))
   expect_equal(attr(k401, "setting"), "401k")
 })

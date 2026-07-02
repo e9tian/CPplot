@@ -35,8 +35,8 @@ remotes::install_github("e9tian/CPplot")
 
 ## Observational CP Plot
 
-For observational studies, use `cp_plot()` after estimating the propensity
-score \(\hat e(X)\) and CATE \(\hat\tau(X)\) for each unit.
+For observational studies, `cp_plot()` can estimate simple default inputs from
+an outcome, a binary treatment, and covariates.
 
 ```r
 library(CPplot)
@@ -44,26 +44,47 @@ library(CPplot)
 set.seed(1)
 n <- 800
 df <- data.frame(x1 = rnorm(n), x2 = rnorm(n))
-df$ehat <- plogis(-0.4 + 1.1 * df$x1)
 df$z <- rbinom(n, 1, plogis(-0.6 + 1.1 * df$x1 + 1.0 * df$x2))
-df$tau_hat <- 0.2 + 2.0 * df$ehat + 1.3 * df$x2 + rnorm(n, sd = 0.35)
+df$y <- 1 + 0.5 * df$x1 + 0.4 * df$x2 +
+  df$z * (0.5 + 0.8 * df$x1 - 0.5 * df$x2) +
+  rnorm(n, sd = 0.8)
 
 fit <- cp_plot(
   df,
-  ehat = "ehat",
-  tau_hat = "tau_hat",
-  treat = "z"
+  outcome = "y",
+  treatment = "z",
+  covariates = c("x1", "x2")
 )
 
 fit$plot
 fit$slopes
+fit$bracketing
 ```
 
-The returned object has three components:
+By default, `cp_plot()` estimates the propensity score with logistic regression
+and the CATE with two OLS outcome regressions. If you already estimated the
+inputs with your preferred model, pass them directly:
+
+```r
+df$e_hat <- plogis(-0.4 + 1.1 * df$x1)
+df$tau_hat <- 0.2 + 2.0 * df$e_hat + 1.3 * df$x2 + rnorm(n, sd = 0.35)
+
+fit <- cp_plot(
+  df,
+  e_hat = "e_hat",
+  tau_hat = "tau_hat",
+  treatment = "z"
+)
+```
+
+The returned object has five main components:
 
 - `fit$plot`: the `ggplot` object.
 - `fit$slopes`: slopes for the unweighted, treated-weighted, and
   control-weighted full-sample linear fits.
+- `fit$bracketing`: slope signs and their bracketing implications.
+- `fit$bracketing_summary`: a compact text summary of the ATO bracketing
+  diagnostic.
 - `fit$data_used`: the finite observations used in the plot.
 
 ## Local CP Plot for IV Studies
@@ -81,14 +102,14 @@ CP plot uses \(\widehat\Delta_D(X)\) as the weight.
 set.seed(2)
 n <- 800
 df <- data.frame(x1 = rnorm(n), x2 = rnorm(n))
-df$ehat <- plogis(-0.3 + 1.0 * df$x1)
+df$e_hat <- plogis(-0.3 + 1.0 * df$x1)
 df$z <- rbinom(n, 1, plogis(-0.5 + 1.0 * df$x1 + 1.1 * df$x2))
 df$pi_c_hat <- pmax(0.05, plogis(-0.2 + 0.7 * df$x1 - 0.3 * df$x2))
-df$tau_c_hat <- 0.4 + 2.4 * df$ehat + 1.5 * df$x2 + rnorm(n, sd = 0.45)
+df$tau_c_hat <- 0.4 + 2.4 * df$e_hat + 1.5 * df$x2 + rnorm(n, sd = 0.45)
 
 fit <- local_cp_plot(
   df,
-  ehat = "ehat",
+  e_hat = "e_hat",
   tau_c_hat = "tau_c_hat",
   pi_c_hat = "pi_c_hat",
   group = "z"
@@ -96,6 +117,7 @@ fit <- local_cp_plot(
 
 fit$plot
 fit$slopes
+fit$bracketing
 ```
 
 ## Basic Estimation Helpers
@@ -114,9 +136,14 @@ df$y <- 1 + 0.5 * df$x1 + 0.4 * df$x2 +
   df$z * (0.5 + 0.8 * df$x1 - 0.5 * df$x2) +
   rnorm(n, sd = 0.8)
 
-df2 <- estimate_cp_inputs(df, y = "y", z = "z", x = c("x1", "x2"))
+df2 <- estimate_cp_inputs(
+  df,
+  outcome = "y",
+  treatment = "z",
+  covariates = c("x1", "x2")
+)
 
-fit <- cp_plot(df2, ehat = "ehat", tau_hat = "tau_hat", treat = "z")
+fit <- cp_plot(df2, e_hat = "e_hat", tau_hat = "tau_hat", treatment = "z")
 fit$plot
 fit$slopes
 ```
@@ -136,15 +163,15 @@ df$y <- 1 + 0.4 * df$x1 - 0.2 * df$x2 + tau * df$d + rnorm(n, sd = 0.6)
 
 df2 <- estimate_local_cp_inputs(
   df,
-  y = "y",
-  d = "d",
-  z = "z",
-  x = c("x1", "x2")
+  outcome = "y",
+  treatment = "d",
+  instrument = "z",
+  covariates = c("x1", "x2")
 )
 
 fit <- local_cp_plot(
   df2,
-  ehat = "ehat",
+  e_hat = "e_hat",
   tau_c_hat = "tau_c_hat",
   pi_c_hat = "pi_c_hat",
   group = "z"
@@ -153,10 +180,13 @@ fit$plot
 fit$slopes
 ```
 
-These helpers use logistic regression for propensity scores and linear models
-for conditional contrasts. They are not required for the package workflow:
-users can estimate the inputs with causal forests, BART, SuperLearner, xgboost,
-or other models and then pass the resulting columns to the plotting functions.
+These helpers use logistic regression for propensity scores and OLS for
+conditional contrasts by default. `estimate_cp_inputs()` and `cp_plot()` also
+support `e_method = "random_forest"` and `tau_method = "random_forest"` through
+the optional `ranger` package. The helpers are not required for the package
+workflow: users can estimate the inputs with causal forests, BART,
+SuperLearner, xgboost, or other models and then pass the resulting columns to
+the plotting functions.
 
 ## Paper Demo
 
@@ -178,7 +208,7 @@ rhc_treat_col <- attr(rhc, "treatment_column")
 head(rhc[, c("propensity_scores", "tau_hat", rhc_treat_col)])
 
 k401 <- load_paper_401k_data()
-head(k401[, c("ehat", "Z", "delta_d", "tau_c_hat")])
+head(k401[, c("e_hat", "Z", "delta_d", "tau_c_hat")])
 ```
 
 `load_paper_cp_data(setting)` loads one observational CP-plot intermediate

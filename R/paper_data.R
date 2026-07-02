@@ -106,6 +106,7 @@ load_paper_401k_data <- function() {
   if (!all(required %in% names(df))) {
     stop("Bundled 401(k) data is missing required columns: ", paste(required, collapse = ", "), call. = FALSE)
   }
+  names(df)[names(df) == "ehat"] <- "e_hat"
 
   attr(df, "setting") <- "401k"
   attr(df, "source") <- file

@@ -34,5 +34,5 @@ paper_datasets()
 rhc <- load_paper_cp_data("rhc")
 head(rhc[, c("propensity_scores", "tau_hat")])
 k401 <- load_paper_401k_data()
-head(k401[, c("ehat", "delta_d", "tau_c_hat")])
+head(k401[, c("e_hat", "delta_d", "tau_c_hat")])
 }

@@ -33,6 +33,7 @@ Imports:
     utils
 Suggests:
     gridExtra,
+    ranger,
     testthat (>= 3.0.0),
     knitr,
     rmarkdown

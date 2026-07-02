@@ -77,9 +77,9 @@ make_paper_cp_plot <- function(file) {
 
   fit <- CPplot::cp_plot(
     df,
-    ehat = "propensity_scores",
+    e_hat = "propensity_scores",
     tau_hat = "tau_hat",
-    treat = treatment,
+    treatment = treatment,
     title = title
   )
   fit$setting <- setting
@@ -161,10 +161,11 @@ make_401k_local_cp_plot <- function(paper_dir, output_dir) {
   if (!all(required %in% names(unit_summary))) {
     stop("Missing required columns in ", csv_file, ": ", paste(required, collapse = ", "), call. = FALSE)
   }
+  names(unit_summary)[names(unit_summary) == "ehat"] <- "e_hat"
 
   fit <- CPplot::local_cp_plot(
     unit_summary,
-    ehat = "ehat",
+    e_hat = "e_hat",
     tau_c_hat = "tau_c_hat",
     pi_c_hat = "delta_d",
     group = "Z",

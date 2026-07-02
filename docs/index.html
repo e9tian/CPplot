@@ -140,13 +140,13 @@ library(CPplot)</code></pre>
               </tr>
               <tr>
                 <td>Treated-tilted linear fit</td>
-                <td><code>ehat_i</code></td>
+                <td><code>e_hat_i</code></td>
                 <td><code>cov{tau(X), e(X) | Z = 1}</code></td>
                 <td><code>tau_ATT &gt;= tau_ATO</code></td>
               </tr>
               <tr>
                 <td>Control-tilted linear fit</td>
-                <td><code>1 - ehat_i</code></td>
+                <td><code>1 - e_hat_i</code></td>
                 <td><code>cov{tau(X), e(X) | Z = 0}</code></td>
                 <td><code>tau_ATO &gt;= tau_ATC</code></td>
               </tr>
@@ -177,13 +177,13 @@ library(CPplot)</code></pre>
               </tr>
               <tr>
                 <td>Instrument-treated complier fit</td>
-                <td><code>pi_c_hat_i * ehat_i</code></td>
+                <td><code>pi_c_hat_i * e_hat_i</code></td>
                 <td><code>cov{tau^c(X), e(X) | U = c, Z = 1}</code></td>
                 <td><code>tau^c_ATT &gt;= tau^c_ATO</code></td>
               </tr>
               <tr>
                 <td>Instrument-control complier fit</td>
-                <td><code>pi_c_hat_i * (1 - ehat_i)</code></td>
+                <td><code>pi_c_hat_i * (1 - e_hat_i)</code></td>
                 <td><code>cov{tau^c(X), e(X) | U = c, Z = 0}</code></td>
                 <td><code>tau^c_ATO &gt;= tau^c_ATC</code></td>
               </tr>
@@ -195,9 +195,9 @@ library(CPplot)</code></pre>
           <h2>Observational CP plot</h2>
           <p>
             In an observational study, the CP plot compares unit-level estimated CATEs
-            <code>tau_hat</code> with estimated propensity scores <code>ehat</code>.
+            <code>tau_hat</code> with estimated propensity scores <code>e_hat</code>.
             The three fitted lines use full-sample weights <code>1</code>,
-            <code>ehat</code>, and <code>1 - ehat</code>.
+            <code>e_hat</code>, and <code>1 - e_hat</code>.
           </p>
           <div class="tutorial-block">
             <div class="panel">
@@ -207,21 +207,22 @@ library(CPplot)</code></pre>
 set.seed(1)
 n <- 900
 df <- data.frame(x1 = rnorm(n), x2 = rnorm(n))
-df$ehat <- plogis(-0.30 + 1.05 * df$x1 - 0.45 * df$x2)
-df$z <- rbinom(n, 1, df$ehat)
-df$tau_hat <- -0.75 + 2.40 * df$ehat +
-  5.20 * (df$ehat - 0.52)^2 +
+df$e_hat <- plogis(-0.30 + 1.05 * df$x1 - 0.45 * df$x2)
+df$z <- rbinom(n, 1, df$e_hat)
+df$tau_hat <- -0.75 + 2.40 * df$e_hat +
+  5.20 * (df$e_hat - 0.52)^2 +
   0.42 * df$x2 + rnorm(n, sd = 0.24)
 
 fit <- cp_plot(
   df,
-  ehat = "ehat",
+  e_hat = "e_hat",
   tau_hat = "tau_hat",
-  treat = "z"
+  treatment = "z"
 )
 
 fit$plot
-fit$slopes</code></pre>
+fit$slopes
+fit$bracketing</code></pre>
             </div>
             <figure class="figure-panel">
               <img src="assets/cp-plot-example.png" alt="Example observational CP plot">
@@ -248,6 +249,14 @@ fit$slopes</code></pre>
                 <td>Slopes, standard errors, and p-values for the three diagnostic fits.</td>
               </tr>
               <tr>
+                <td><code>fit$bracketing</code></td>
+                <td>Slope signs and their bracketing implications.</td>
+              </tr>
+              <tr>
+                <td><code>fit$bracketing_summary</code></td>
+                <td>A compact text summary of the ATO bracketing diagnostic.</td>
+              </tr>
+              <tr>
                 <td><code>fit$data_used</code></td>
                 <td>The finite observations retained after filtering missing or nonfinite inputs.</td>
               </tr>
@@ -270,33 +279,34 @@ fit$slopes</code></pre>
 set.seed(2)
 n <- 900
 df <- data.frame(x1 = rnorm(n), x2 = rnorm(n))
-df$ehat <- plogis(-0.25 + 0.95 * df$x1 + 0.35 * df$x2)
-df$z <- rbinom(n, 1, df$ehat)
+df$e_hat <- plogis(-0.25 + 0.95 * df$x1 + 0.35 * df$x2)
+df$z <- rbinom(n, 1, df$e_hat)
 df$pi_c_hat <- pmax(
   0.04,
   plogis(-0.35 + 1.05 * df$x1 - 0.95 * df$x2)
 )
-df$tau_c_hat <- -0.55 + 1.20 * df$ehat +
-  5.60 * (df$ehat - 0.48)^2 +
+df$tau_c_hat <- -0.55 + 1.20 * df$e_hat +
+  5.60 * (df$e_hat - 0.48)^2 +
   0.58 * df$x2 + rnorm(n, sd = 0.28)
 
 fit <- local_cp_plot(
   df,
-  ehat = "ehat",
+  e_hat = "e_hat",
   tau_c_hat = "tau_c_hat",
   pi_c_hat = "pi_c_hat",
   group = "z"
 )
 
 fit$plot
-fit$slopes</code></pre>
+fit$slopes
+fit$bracketing</code></pre>
             </div>
             <figure class="figure-panel">
               <img src="assets/local-cp-plot-example.png" alt="Example local CP plot">
               <figcaption class="caption">
                 Local CP plots use full-sample weights
-                <code>pi_c</code>, <code>pi_c * ehat</code>, and
-                <code>pi_c * (1 - ehat)</code>.
+                <code>pi_c</code>, <code>pi_c * e_hat</code>, and
+                <code>pi_c * (1 - e_hat)</code>.
               </figcaption>
             </figure>
           </div>
@@ -306,21 +316,22 @@ fit$slopes</code></pre>
           <h2>Estimation helpers</h2>
           <p>
             CPplot includes simple transparent helpers for examples and quick checks.
-            They use logistic regression for propensity scores and linear models for
-            conditional contrasts.
+            They use logistic regression for propensity scores and OLS for
+            conditional contrasts by default, with optional random forest methods
+            through the <code>ranger</code> package.
           </p>
           <pre><button class="copy" type="button">Copy</button><code>df2 <- estimate_cp_inputs(
   df,
-  y = "y",
-  z = "z",
-  x = c("x1", "x2")
+  outcome = "y",
+  treatment = "z",
+  covariates = c("x1", "x2")
 )
 
 fit <- cp_plot(
   df2,
-  ehat = "ehat",
+  e_hat = "e_hat",
   tau_hat = "tau_hat",
-  treat = "z"
+  treatment = "z"
 )</code></pre>
           <p>
             These helpers are optional. For applied work, you can estimate the inputs
@@ -344,7 +355,7 @@ rhc_treat_col <- attr(rhc, "treatment_column")
 head(rhc[, c("propensity_scores", "tau_hat", rhc_treat_col)])
 
 k401 <- load_paper_401k_data()
-head(k401[, c("ehat", "Z", "delta_d", "tau_c_hat")])</code></pre>
+head(k401[, c("e_hat", "Z", "delta_d", "tau_c_hat")])</code></pre>
           <h3>Reproduce package-based paper plots</h3>
           <pre><button class="copy" type="button">Copy</button><code>source(system.file(
   "paper-examples/reproduce-paper-plots.R",
@@ -364,19 +375,25 @@ reproduce_paper_plots()</code></pre>
 
           <article class="api-entry">
             <h3><code>cp_plot()</code></h3>
-            <pre class="signature"><code>cp_plot(data, ehat, tau_hat, treat = NULL,
+            <pre class="signature"><code>cp_plot(data, e_hat = NULL, tau_hat = NULL, treatment = NULL,
+        outcome = NULL, covariates = NULL,
+        e_method = "logistic", tau_method = "ols",
         point_labels = c("Control", "Treated"),
         title = NULL, alpha = 0.45, point_size = 1)</code></pre>
-            <p>Draw an observational CP plot and return the plot plus slope diagnostics.</p>
+            <p>Draw an observational CP plot from precomputed inputs, or estimate default inputs from an outcome, treatment, and covariates.</p>
             <table class="api-table">
               <thead>
                 <tr><th>Argument</th><th>What to pass</th></tr>
               </thead>
               <tbody>
                 <tr><td><code>data</code></td><td>A data frame containing the plotting inputs.</td></tr>
-                <tr><td><code>ehat</code></td><td>Name of the estimated propensity-score column, <code>hat(e)(X)</code>.</td></tr>
-                <tr><td><code>tau_hat</code></td><td>Name of the estimated CATE column, <code>hat(tau)(X)</code>.</td></tr>
-                <tr><td><code>treat</code></td><td>Optional 0/1 treatment column used for point shapes and the point legend. The fitted lines still use the full sample with weights <code>1</code>, <code>ehat</code>, and <code>1 - ehat</code>.</td></tr>
+                <tr><td><code>e_hat</code></td><td>Optional name of the estimated propensity-score column, <code>hat(e)(X)</code>.</td></tr>
+                <tr><td><code>tau_hat</code></td><td>Optional name of the estimated CATE column, <code>hat(tau)(X)</code>.</td></tr>
+                <tr><td><code>treatment</code></td><td>0/1 treatment column. Required for default estimation and optional for point shapes when <code>e_hat</code> and <code>tau_hat</code> are supplied.</td></tr>
+                <tr><td><code>outcome</code></td><td>Outcome column used with <code>treatment</code> and <code>covariates</code> for default estimation.</td></tr>
+                <tr><td><code>covariates</code></td><td>Covariate column names for default estimation.</td></tr>
+                <tr><td><code>e_method</code></td><td><code>logistic</code> or <code>random_forest</code>.</td></tr>
+                <tr><td><code>tau_method</code></td><td><code>ols</code> or <code>random_forest</code>.</td></tr>
                 <tr><td><code>point_labels</code></td><td>Two labels for the 0 and 1 point groups. Default is <code>Control</code> and <code>Treated</code>.</td></tr>
                 <tr><td><code>title</code></td><td>Optional ggplot title.</td></tr>
                 <tr><td><code>alpha</code>, <code>point_size</code></td><td>Point transparency and size.</td></tr>
@@ -384,13 +401,14 @@ reproduce_paper_plots()</code></pre>
             </table>
             <p>
               Returns a <code>CPplot_result</code> list with <code>plot</code>,
-              <code>slopes</code>, and <code>data_used</code>.
+              <code>slopes</code>, <code>bracketing</code>,
+              <code>bracketing_summary</code>, and <code>data_used</code>.
             </p>
           </article>
 
           <article class="api-entry">
             <h3><code>local_cp_plot()</code></h3>
-            <pre class="signature"><code>local_cp_plot(data, ehat, tau_c_hat, pi_c_hat, group = NULL,
+            <pre class="signature"><code>local_cp_plot(data, e_hat, tau_c_hat, pi_c_hat, group = NULL,
               point_labels = c("Control", "Treated"),
               title = NULL, alpha = 0.35, point_size = 0.8)</code></pre>
             <p>Draw a local CP plot for an IV study.</p>
@@ -400,25 +418,26 @@ reproduce_paper_plots()</code></pre>
               </thead>
               <tbody>
                 <tr><td><code>data</code></td><td>A data frame containing the local CP plotting inputs.</td></tr>
-                <tr><td><code>ehat</code></td><td>Name of the estimated IV propensity-score column, <code>hat(e)(X)</code>.</td></tr>
+                <tr><td><code>e_hat</code></td><td>Name of the estimated IV propensity-score column, <code>hat(e)(X)</code>.</td></tr>
                 <tr><td><code>tau_c_hat</code></td><td>Name of the estimated conditional complier treatment-effect column, <code>hat(tau)^c(X)</code>.</td></tr>
                 <tr><td><code>pi_c_hat</code></td><td>Name of the estimated principal-score column. Under the IV assumptions, this is the estimated conditional first stage.</td></tr>
-                <tr><td><code>group</code></td><td>Optional 0/1 IV group column used for point shapes. The three fitted lines use all finite observations with weights <code>pi_c_hat</code>, <code>pi_c_hat * ehat</code>, and <code>pi_c_hat * (1 - ehat)</code>.</td></tr>
+                <tr><td><code>group</code></td><td>Optional 0/1 IV group column used for point shapes. The three fitted lines use all finite observations with weights <code>pi_c_hat</code>, <code>pi_c_hat * e_hat</code>, and <code>pi_c_hat * (1 - e_hat)</code>.</td></tr>
                 <tr><td><code>point_labels</code></td><td>Two labels for the 0 and 1 point groups. Default is <code>Control</code> and <code>Treated</code>.</td></tr>
                 <tr><td><code>title</code>, <code>alpha</code>, <code>point_size</code></td><td>Optional plot title and point styling.</td></tr>
               </tbody>
             </table>
             <p>
               Returns a <code>CPplot_result</code> list with <code>plot</code>,
-              <code>slopes</code>, and <code>data_used</code>. Rows with
+              <code>slopes</code>, <code>bracketing</code>,
+              <code>bracketing_summary</code>, and <code>data_used</code>. Rows with
               nonpositive or nonfinite <code>pi_c_hat</code> are dropped.
             </p>
           </article>
 
           <article class="api-entry">
             <h3>Slope helpers</h3>
-            <pre class="signature"><code>cp_slopes(data, ehat, tau_hat, treat = NULL)
-local_cp_slopes(data, ehat, tau_c_hat, pi_c_hat, group = NULL)</code></pre>
+            <pre class="signature"><code>cp_slopes(data, e_hat, tau_hat, treatment = NULL)
+local_cp_slopes(data, e_hat, tau_c_hat, pi_c_hat, group = NULL)</code></pre>
             <table class="api-table">
               <thead>
                 <tr><th>Function</th><th>Output</th></tr>
@@ -437,9 +456,12 @@ local_cp_slopes(data, ehat, tau_c_hat, pi_c_hat, group = NULL)</code></pre>
 
           <article class="api-entry">
             <h3>Simple estimation helpers</h3>
-            <pre class="signature"><code>estimate_cp_inputs(data, y, z, x, family = stats::binomial())
+            <pre class="signature"><code>estimate_cp_inputs(data, outcome, treatment, covariates,
+                   e_method = "logistic", tau_method = "ols",
+                   family = stats::binomial())
 
-estimate_local_cp_inputs(data, y, d, z, x,
+estimate_local_cp_inputs(data, outcome, treatment, instrument, covariates,
+                         e_method = "logistic", contrast_method = "ols",
                          family = stats::binomial(),
                          min_first_stage = 1e-6)</code></pre>
             <table class="api-table">
@@ -447,8 +469,8 @@ estimate_local_cp_inputs(data, y, d, z, x,
                 <tr><th>Function</th><th>Inputs and output</th></tr>
               </thead>
               <tbody>
-                <tr><td><code>estimate_cp_inputs()</code></td><td>Pass outcome <code>y</code>, treatment <code>z</code>, and covariates <code>x</code>. It returns the original data plus <code>ehat</code> and <code>tau_hat</code>.</td></tr>
-                <tr><td><code>estimate_local_cp_inputs()</code></td><td>Pass outcome <code>y</code>, treatment <code>d</code>, IV <code>z</code>, and covariates <code>x</code>. It returns the original data plus <code>ehat</code>, <code>delta_y</code>, <code>delta_d</code>, <code>pi_c_hat</code>, and <code>tau_c_hat</code>.</td></tr>
+                <tr><td><code>estimate_cp_inputs()</code></td><td>Pass outcome, treatment, and covariates. It returns the original data plus <code>e_hat</code> and <code>tau_hat</code>.</td></tr>
+                <tr><td><code>estimate_local_cp_inputs()</code></td><td>Pass outcome, treatment, instrument, and covariates. It returns the original data plus <code>e_hat</code>, <code>delta_y</code>, <code>delta_d</code>, <code>pi_c_hat</code>, and <code>tau_c_hat</code>.</td></tr>
               </tbody>
             </table>
           </article>
@@ -465,7 +487,7 @@ load_paper_401k_data()</code></pre>
               <tbody>
                 <tr><td><code>paper_datasets()</code></td><td>An index with dataset name, type, treatment column, loader, and description.</td></tr>
                 <tr><td><code>load_paper_cp_data(setting)</code></td><td>One observational paper-demo dataset with <code>propensity_scores</code>, <code>tau_hat</code>, and the relevant treatment column.</td></tr>
-                <tr><td><code>load_paper_401k_data()</code></td><td>The 401(k) local CP dataset with <code>ehat</code>, <code>Z</code>, <code>delta_d</code>, and <code>tau_c_hat</code>.</td></tr>
+                <tr><td><code>load_paper_401k_data()</code></td><td>The 401(k) local CP dataset with <code>e_hat</code>, <code>Z</code>, <code>delta_d</code>, and <code>tau_c_hat</code>.</td></tr>
               </tbody>
             </table>
           </article>

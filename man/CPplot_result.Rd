@@ -14,5 +14,6 @@ The input object, invisibly.
 }
 \description{
 Objects returned by \code{cp_plot()} and \code{local_cp_plot()} contain a
-\code{ggplot} object, slope summaries, and the filtered plotting data.
+\code{ggplot} object, slope summaries, bracketing interpretations, a compact
+bracketing summary, and the filtered plotting data.
 }

@@ -73,12 +73,12 @@ fit_line <- function(fit_data, response, e_grid, weights = NULL) {
   }
 
   line_y <- rep(NA_real_, length(e_grid))
-  if (nrow(fit_data) < 2L || length(unique(fit_data$ehat)) < 2L) {
+  if (nrow(fit_data) < 2L || length(unique(fit_data$e_hat)) < 2L) {
     return(line_y)
   }
 
   fit_args <- list(
-    formula = stats::as.formula(paste(response, "~ ehat")),
+    formula = stats::as.formula(paste(response, "~ e_hat")),
     data = fit_data
   )
   if (!is.null(weights)) {
@@ -86,7 +86,7 @@ fit_line <- function(fit_data, response, e_grid, weights = NULL) {
   }
 
   fit <- do.call(stats::lm, fit_args)
-  as.numeric(stats::predict(fit, newdata = data.frame(ehat = e_grid)))
+  as.numeric(stats::predict(fit, newdata = data.frame(e_hat = e_grid)))
 }
 
 cp_line_data <- function(plot_df, labels, e_grid, point_labels, weighted = FALSE) {
@@ -96,16 +96,16 @@ cp_line_data <- function(plot_df, labels, e_grid, point_labels, weighted = FALSE
       weights <- switch(
         i,
         plot_df$pi_c_hat,
-        plot_df$pi_c_hat * plot_df$ehat,
-        plot_df$pi_c_hat * (1 - plot_df$ehat)
+        plot_df$pi_c_hat * plot_df$e_hat,
+        plot_df$pi_c_hat * (1 - plot_df$e_hat)
       )
       line_y <- fit_line(plot_df, response = y_col, e_grid = e_grid, weights = weights)
     } else {
-      weights <- switch(i, NULL, plot_df$ehat, 1 - plot_df$ehat)
+      weights <- switch(i, NULL, plot_df$e_hat, 1 - plot_df$e_hat)
       line_y <- fit_line(plot_df, response = y_col, e_grid = e_grid, weights = weights)
     }
 
-    out <- data.frame(ehat = e_grid, fit = labels[[i]])
+    out <- data.frame(e_hat = e_grid, fit = labels[[i]])
     out[[y_col]] <- line_y
     out
   }))

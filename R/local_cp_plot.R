@@ -1,8 +1,8 @@
-local_cp_plot <- function(data, ehat, tau_c_hat, pi_c_hat, group = NULL,
+local_cp_plot <- function(data, e_hat, tau_c_hat, pi_c_hat, group = NULL,
                           point_labels = c("Control", "Treated"),
                           title = NULL, alpha = 0.35, point_size = 0.8) {
   point_labels <- validate_point_labels(point_labels)
-  e <- col_data(data, ehat, "ehat")
+  e <- col_data(data, e_hat, "e_hat")
   tau <- col_data(data, tau_c_hat, "tau_c_hat")
   pi_c <- col_data(data, pi_c_hat, "pi_c_hat")
   z <- col_data(data, group, "group")
@@ -12,24 +12,26 @@ local_cp_plot <- function(data, ehat, tau_c_hat, pi_c_hat, group = NULL,
     ok <- ok & is.finite(z)
   }
 
-  plot_df <- data.frame(ehat = e[ok], tau_c_hat = tau[ok], pi_c_hat = pi_c[ok])
+  plot_df <- data.frame(e_hat = e[ok], tau_c_hat = tau[ok], pi_c_hat = pi_c[ok])
   if (!is.null(z)) {
     plot_df$group <- binary_group(z[ok], labels = point_labels, arg = "group")
   }
 
   slopes <- local_cp_slopes(
     data,
-    ehat = ehat,
+    e_hat = e_hat,
     tau_c_hat = tau_c_hat,
     pi_c_hat = pi_c_hat,
     group = group
   )
+  bracketing <- cp_bracketing(slopes, local = TRUE)
+  bracketing_summary <- cp_bracketing_summary(bracketing, local = TRUE)
   labels <- slopes$fit
   colors <- line_palette(labels)
-  e_grid <- make_grid(plot_df$ehat)
+  e_grid <- make_grid(plot_df$e_hat)
   line_df <- cp_line_data(plot_df, labels, e_grid, point_labels, weighted = TRUE)
 
-  p <- ggplot2::ggplot(plot_df, ggplot2::aes(x = ehat, y = tau_c_hat))
+  p <- ggplot2::ggplot(plot_df, ggplot2::aes(x = e_hat, y = tau_c_hat))
   if (is.null(group)) {
     p <- p + ggplot2::geom_point(color = "grey55", alpha = alpha, size = point_size)
   } else {
@@ -46,7 +48,7 @@ local_cp_plot <- function(data, ehat, tau_c_hat, pi_c_hat, group = NULL,
   p <- p +
     ggplot2::geom_line(
       data = line_df,
-      ggplot2::aes(x = ehat, y = tau_c_hat, color = fit, linetype = fit),
+      ggplot2::aes(x = e_hat, y = tau_c_hat, color = fit, linetype = fit),
       inherit.aes = FALSE,
       linewidth = 0.75
     ) +
@@ -77,5 +79,11 @@ local_cp_plot <- function(data, ehat, tau_c_hat, pi_c_hat, group = NULL,
     ) +
     ggplot2::geom_hline(yintercept = 0, linetype = "solid", color = "black", alpha = 0.7)
 
-  new_CPplot_result(plot = p, slopes = slopes, data_used = plot_df)
+  new_CPplot_result(
+    plot = p,
+    slopes = slopes,
+    bracketing = bracketing,
+    bracketing_summary = bracketing_summary,
+    data_used = plot_df
+  )
 }
