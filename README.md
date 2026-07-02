@@ -57,24 +57,13 @@ fit <- cp_plot(
 )
 
 fit$plot
-fit$slopes
-fit$bracketing
 ```
 
-By default, `cp_plot()` estimates the propensity score with logistic regression
-and the CATE with two OLS outcome regressions. If you already estimated the
-inputs with your preferred model, pass them directly:
+After drawing the plot, inspect the numerical diagnostics:
 
 ```r
-df$e_hat <- plogis(-0.4 + 1.1 * df$x1)
-df$tau_hat <- 0.2 + 2.0 * df$e_hat + 1.3 * df$x2 + rnorm(n, sd = 0.35)
-
-fit <- cp_plot(
-  df,
-  e_hat = "e_hat",
-  tau_hat = "tau_hat",
-  treatment = "z"
-)
+fit$slopes
+fit$bracketing
 ```
 
 The returned object has five main components:
@@ -116,14 +105,22 @@ fit <- local_cp_plot(
 )
 
 fit$plot
+```
+
+After drawing the plot, inspect the numerical diagnostics:
+
+```r
 fit$slopes
 fit$bracketing
 ```
 
-## Basic Estimation Helpers
+## Input Modes and Estimation Helpers
 
-The package includes simple transparent helpers for quick examples. The code
-blocks below are self-contained and can be copied directly into R.
+`CPplot` supports two input modes.
+
+Mode 1 uses simple default estimators from an outcome, a binary treatment, and
+covariates. By default, `cp_plot()` estimates the propensity score with logistic
+regression and the CATE with two OLS outcome regressions:
 
 ```r
 library(CPplot)
@@ -146,6 +143,33 @@ df2 <- estimate_cp_inputs(
 fit <- cp_plot(df2, e_hat = "e_hat", tau_hat = "tau_hat", treatment = "z")
 fit$plot
 fit$slopes
+```
+
+The same default estimation can be done in one call:
+
+```r
+fit <- cp_plot(
+  df,
+  outcome = "y",
+  treatment = "z",
+  covariates = c("x1", "x2")
+)
+```
+
+Mode 2 uses precomputed inputs. If you already estimated
+\(\hat e(X_i)\) and \(\hat\tau(X_i)\) with your preferred model, pass those
+columns directly:
+
+```r
+df$e_hat <- plogis(-0.4 + 1.1 * df$x1)
+df$tau_hat <- 0.2 + 2.0 * df$e_hat + 1.3 * df$x2 + rnorm(n, sd = 0.35)
+
+fit <- cp_plot(
+  df,
+  e_hat = "e_hat",
+  tau_hat = "tau_hat",
+  treatment = "z"
+)
 ```
 
 For IV examples:
@@ -180,13 +204,11 @@ fit$plot
 fit$slopes
 ```
 
-These helpers use logistic regression for propensity scores and OLS for
-conditional contrasts by default. `estimate_cp_inputs()` and `cp_plot()` also
-support `e_method = "random_forest"` and `tau_method = "random_forest"` through
-the optional `ranger` package. The helpers are not required for the package
-workflow: users can estimate the inputs with causal forests, BART,
-SuperLearner, xgboost, or other models and then pass the resulting columns to
-the plotting functions.
+For Mode 1, `estimate_cp_inputs()` and `cp_plot()` also support
+`e_method = "random_forest"` and `tau_method = "random_forest"` through the
+optional `ranger` package. For Mode 2, users can estimate the inputs with
+causal forests, BART, SuperLearner, xgboost, or other models and then pass the
+resulting columns to the plotting functions.
 
 ## Paper Demo
 

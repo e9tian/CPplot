@@ -220,9 +220,7 @@ fit <- cp_plot(
   treatment = "z"
 )
 
-fit$plot
-fit$slopes
-fit$bracketing</code></pre>
+fit$plot</code></pre>
             </div>
             <figure class="figure-panel">
               <img src="assets/cp-plot-example.png" alt="Example observational CP plot">
@@ -231,6 +229,22 @@ fit$bracketing</code></pre>
                 treated-weighted, and control-weighted full-sample fits.
               </figcaption>
             </figure>
+          </div>
+          <div class="output-block">
+            <h3>Numerical diagnostics</h3>
+            <pre><button class="copy" type="button">Copy</button><code>fit$slopes
+fit$bracketing</code></pre>
+            <pre class="output"><code># fit$slopes
+               fit   n     slope  std_error      p_value
+1       Unweighted 900 1.0610430 0.07819181 2.726416e-38
+2 Treated weighted 900 1.9077236 0.08060820 1.292857e-96
+3 Control weighted 900 0.2991324 0.08803260 7.087170e-04
+
+# fit$bracketing
+               fit     slope slope_sign       implication
+1       Unweighted 1.0610430   positive ATT &gt;= ATE &gt;= ATC
+2 Treated weighted 1.9077236   positive        ATT &gt;= ATO
+3 Control weighted 0.2991324   positive        ATO &gt;= ATC</code></pre>
           </div>
           <table>
             <thead>
@@ -297,9 +311,7 @@ fit <- local_cp_plot(
   group = "z"
 )
 
-fit$plot
-fit$slopes
-fit$bracketing</code></pre>
+fit$plot</code></pre>
             </div>
             <figure class="figure-panel">
               <img src="assets/local-cp-plot-example.png" alt="Example local CP plot">
@@ -310,15 +322,41 @@ fit$bracketing</code></pre>
               </figcaption>
             </figure>
           </div>
+          <div class="output-block">
+            <h3>Numerical diagnostics</h3>
+            <pre><button class="copy" type="button">Copy</button><code>fit$slopes
+fit$bracketing</code></pre>
+            <pre class="output"><code># fit$slopes
+                        fit   n    slope  std_error       p_value
+1         Complier weighted 900 2.660192 0.09724592 2.528526e-120
+2 Treated-complier weighted 900 3.286171 0.10690743 2.429373e-142
+3 Control-complier weighted 900 2.008876 0.10256607  2.106080e-71
+
+# fit$bracketing
+                        fit    slope slope_sign
+1         Complier weighted 2.660192   positive
+2 Treated-complier weighted 3.286171   positive
+3 Control-complier weighted 2.008876   positive
+                          implication
+1 tau_ATT^c &gt;= tau_ATE^c &gt;= tau_ATC^c
+2              tau_ATT^c &gt;= tau_ATO^c
+3              tau_ATO^c &gt;= tau_ATC^c</code></pre>
+          </div>
         </section>
 
         <section id="helpers">
           <h2>Estimation helpers</h2>
           <p>
-            CPplot includes simple transparent helpers for examples and quick checks.
-            They use logistic regression for propensity scores and OLS for
-            conditional contrasts by default, with optional random forest methods
-            through the <code>ranger</code> package.
+            CPplot supports two input modes. In the first mode, the package
+            estimates the plotting inputs from an outcome, treatment, and
+            covariates. In the second mode, you supply your own estimated
+            <code>e_hat</code> and <code>tau_hat</code> columns directly.
+          </p>
+          <h3>Mode 1: default estimation</h3>
+          <p>
+            This mode uses logistic regression for <code>e_hat</code> and two
+            OLS outcome regressions for <code>tau_hat</code> by default. You can
+            call the helper explicitly:
           </p>
           <pre><button class="copy" type="button">Copy</button><code>df2 <- estimate_cp_inputs(
   df,
@@ -334,9 +372,33 @@ fit <- cp_plot(
   treatment = "z"
 )</code></pre>
           <p>
-            These helpers are optional. For applied work, you can estimate the inputs
-            with causal forests, BART, SuperLearner, xgboost, or other models.
+            The same default estimation can be done in one call:
           </p>
+          <pre><button class="copy" type="button">Copy</button><code>fit <- cp_plot(
+  df,
+  outcome = "y",
+  treatment = "z",
+  covariates = c("x1", "x2")
+)</code></pre>
+          <p>
+            Optional random forest methods are available through the
+            <code>ranger</code> package by setting
+            <code>e_method = "random_forest"</code> and/or
+            <code>tau_method = "random_forest"</code>.
+          </p>
+          <h3>Mode 2: precomputed inputs</h3>
+          <p>
+            If you have already estimated unit-level
+            <code>hat(e)(X_i)</code> and <code>hat(tau)(X_i)</code> using causal
+            forests, BART, SuperLearner, xgboost, or another model, pass those
+            columns directly:
+          </p>
+          <pre><button class="copy" type="button">Copy</button><code>fit <- cp_plot(
+  df,
+  e_hat = "e_hat",
+  tau_hat = "tau_hat",
+  treatment = "z"
+)</code></pre>
         </section>
 
         <section id="paper-demo">

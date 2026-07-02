@@ -279,6 +279,19 @@ h3 {
   margin-bottom: 18px;
 }
 
+.output-block {
+  margin: 18px 0 34px;
+}
+
+.output-block h3 {
+  margin-top: 0;
+}
+
+.output {
+  background: #26302e;
+  margin-top: 10px;
+}
+
 .figure-panel {
   border: 1px solid var(--line);
   border-radius: 8px;
