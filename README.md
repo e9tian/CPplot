@@ -14,8 +14,8 @@ local average treatment effects.
 
 Reference:
 
-> Pengfei Tian, Fan Yang, and Peng Ding. "Bracketing Relationships of Weighted
-> Average Treatment Effects." arXiv:2606.11715.
+> Tian, P., Yang, F., & Ding, P. (2026). Bracketing Relationships of Weighted
+> Average Treatment Effects. arXiv preprint arXiv:2606.11715.
 
 Paper link: <https://arxiv.org/abs/2606.11715>
 

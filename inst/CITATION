@@ -14,5 +14,6 @@ bibentry(
   archivePrefix = "arXiv",
   doi = "10.48550/arXiv.2606.11715",
   url = "https://arxiv.org/abs/2606.11715",
-  note = "arXiv:2606.11715"
+  note = "arXiv:2606.11715",
+  textVersion = "Tian, P., Yang, F., & Ding, P. (2026). Bracketing Relationships of Weighted Average Treatment Effects. arXiv preprint arXiv:2606.11715."
 )

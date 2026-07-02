@@ -17,8 +17,9 @@ Description: Implements CP-plots of estimated conditional average treatment
     propensity and help diagnose bracketing relationships among weighted causal
     estimands. The package also implements local CP-plots for instrumental
     variable analyses of weighted local average treatment effects and
-    accompanies Pengfei Tian, Fan Yang, and Peng Ding (2026), "Bracketing
-    Relationships of Weighted Average Treatment Effects", arXiv:2606.11715.
+    accompanies Tian, P., Yang, F., & Ding, P. (2026). Bracketing
+    Relationships of Weighted Average Treatment Effects. arXiv preprint
+    arXiv:2606.11715.
 License: MIT + file LICENSE
 URL: https://arxiv.org/abs/2606.11715
 Depends:
