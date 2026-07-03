@@ -3,6 +3,7 @@
 .Ruserdata
 .Rproj.user/
 .superpowers/
+docs/superpowers/
 .Rcheck/
 *.Rcheck/
 *.tar.gz
