@@ -412,6 +412,22 @@ td {
   margin: 14px 0;
 }
 
+.example-modes {
+  display: grid;
+  gap: 18px;
+  margin: 28px 0 0;
+}
+
+.mode-example h3 {
+  font-size: 18px;
+  margin: 0 0 6px;
+}
+
+.mode-example p {
+  color: var(--muted);
+  margin: 0 0 10px;
+}
+
 .callout {
   border-left: 4px solid var(--teal);
   background: var(--surface-soft);

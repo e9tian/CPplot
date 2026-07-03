@@ -80,14 +80,30 @@
               <tr><td><code>title</code>, <code>alpha</code>, <code>point_size</code></td><td>Optional plot title and point styling.</td></tr>
             </tbody>
           </table>
-          <pre><button class="copy" type="button">Copy</button><code>fit <- cp_plot(y ~ z + x1 + x2, data = df)
-
-fit <- cp_plot(
+          <div class="example-modes">
+            <div class="mode-example">
+              <h3>Mode 1: estimate from a formula</h3>
+              <p>
+                Use this when the data contain the outcome, treatment, and
+                covariates, and you want CPplot to estimate <code>e_hat</code>
+                and <code>tau_hat</code>.
+              </p>
+              <pre><button class="copy" type="button">Copy</button><code>fit <- cp_plot(y ~ z + x1 + x2, data = df)</code></pre>
+            </div>
+            <div class="mode-example">
+              <h3>Mode 2: pass fitted inputs directly</h3>
+              <p>
+                Use this when you already have estimated propensity scores and
+                CATEs from your preferred model.
+              </p>
+              <pre><button class="copy" type="button">Copy</button><code>fit <- cp_plot(
   data = df,
   e_hat = "e_hat",
   tau_hat = "tau_hat",
   treatment = "z"
 )</code></pre>
+            </div>
+          </div>
         </section>
 
         <section id="local-cp-plot">
@@ -116,15 +132,30 @@ fit <- cp_plot(
               <tr><td><code>point_labels</code>, <code>title</code>, <code>alpha</code>, <code>point_size</code></td><td>Optional labels and styling.</td></tr>
             </tbody>
           </table>
-          <pre><button class="copy" type="button">Copy</button><code>fit <- local_cp_plot(y ~ d + x1 + x2 | z + x1 + x2, data = df)
-
-fit <- local_cp_plot(
+          <div class="example-modes">
+            <div class="mode-example">
+              <h3>Mode 1: estimate from a formula</h3>
+              <p>
+                Use this when the data contain the outcome, treatment, IV, and
+                covariates, and you want CPplot to estimate the local CP inputs.
+              </p>
+              <pre><button class="copy" type="button">Copy</button><code>fit <- local_cp_plot(y ~ d + x1 + x2 | z + x1 + x2, data = df)</code></pre>
+            </div>
+            <div class="mode-example">
+              <h3>Mode 2: pass fitted inputs directly</h3>
+              <p>
+                Use this when you already have estimated IV propensity scores,
+                conditional Wald estimates, and complier weights.
+              </p>
+              <pre><button class="copy" type="button">Copy</button><code>fit <- local_cp_plot(
   data = df,
   e_hat = "e_hat",
   tau_c_hat = "tau_c_hat",
   pi_c_hat = "pi_c_hat",
   iv = "z"
 )</code></pre>
+            </div>
+          </div>
         </section>
 
         <section id="return-value">
