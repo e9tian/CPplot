@@ -5,7 +5,7 @@ is_formula <- function(x) {
 formula_labels <- function(formula) {
   labels <- attr(stats::terms(formula), "term.labels")
   if (length(labels) == 0L) {
-    stop("formula must include at least one right-hand-side variable.", call. = FALSE)
+    stop("formula must include at least one variable after ~.", call. = FALSE)
   }
   labels
 }
@@ -13,7 +13,7 @@ formula_labels <- function(formula) {
 formula_lhs <- function(formula) {
   vars <- all.vars(formula[[2L]])
   if (length(vars) != 1L) {
-    stop("formula must have exactly one outcome on the left-hand side.", call. = FALSE)
+    stop("formula must have exactly one outcome before ~.", call. = FALSE)
   }
   vars[[1L]]
 }

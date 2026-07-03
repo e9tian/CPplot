@@ -75,9 +75,10 @@ library(CPplot)</code></pre>
         <section id="cp-plot">
           <h2>Observational CP plot</h2>
           <p>
-            Use a formula. The left-hand side is the outcome; the first
-            right-hand-side variable is the binary treatment; the remaining
-            variables are covariates.
+            If <code>y</code> is the outcome, <code>z</code> is the binary
+            treatment, and <code>x</code> is a covariate, a CP plot can be
+            drawn with <code>cp_plot(y ~ z + x, data = df)</code>. The example
+            below uses two covariates in the same way.
           </p>
           <div class="tutorial-block">
             <div class="panel">
@@ -122,9 +123,11 @@ fit$bracketing</code></pre>
         <section id="local-cp-plot">
           <h2>Local CP plot for IV studies</h2>
           <p>
-            Use an <code>ivreg</code>-style formula. The first right-hand-side
-            block contains the treatment and covariates; the block after
-            <code>|</code> contains the IV and the same covariates.
+            If <code>y</code> is the outcome, <code>d</code> is the treatment,
+            <code>z</code> is the binary IV, and <code>x</code> is a covariate,
+            a local CP plot can be drawn with
+            <code>local_cp_plot(y ~ d + x | z + x, data = df)</code>. The
+            example below uses two covariates in the same way.
           </p>
           <div class="tutorial-block">
             <div class="panel">

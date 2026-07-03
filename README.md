@@ -36,9 +36,10 @@ remotes::install_github("e9tian/CPplot")
 
 ## Observational CP Plot
 
-For observational studies, call `cp_plot()` with a formula. The left-hand side
-is the outcome. On the right-hand side, the first variable is the binary
-treatment and the remaining variables are covariates.
+For observational studies, if `y` is the outcome, `z` is the binary treatment,
+and `x` is a covariate, a CP plot can be drawn with
+`cp_plot(y ~ z + x, data = df)`. The example below uses two covariates in the
+same way.
 
 ```r
 library(CPplot)
@@ -75,9 +76,10 @@ The returned object has five main components:
 
 ## Local CP Plot for IV Studies
 
-For IV studies, use an `ivreg`-style formula. The first right-hand-side block
-contains the treatment followed by covariates. The block after `|` contains the
-binary IV followed by the same covariates.
+For IV studies, if `y` is the outcome, `d` is the treatment, `z` is the binary
+IV, and `x` is a covariate, a local CP plot can be drawn with
+`local_cp_plot(y ~ d + x | z + x, data = df)`. The example below uses two
+covariates in the same way.
 
 ```r
 set.seed(2)

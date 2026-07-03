@@ -69,7 +69,7 @@
               <tr><th>Argument</th><th>What to pass</th></tr>
             </thead>
             <tbody>
-              <tr><td><code>formula</code></td><td>Optional formula such as <code>y ~ z + x1 + x2</code>. The first right-hand-side variable is the binary treatment; the remaining variables are covariates.</td></tr>
+              <tr><td><code>formula</code></td><td>Optional formula. For outcome <code>y</code>, binary treatment <code>z</code>, and covariates <code>x1</code> and <code>x2</code>, use <code>y ~ z + x1 + x2</code>.</td></tr>
               <tr><td><code>data</code></td><td>A data frame.</td></tr>
               <tr><td><code>e_hat</code></td><td>Optional name of a precomputed propensity-score column.</td></tr>
               <tr><td><code>tau_hat</code></td><td>Optional name of a precomputed CATE column.</td></tr>
@@ -104,7 +104,7 @@ fit <- cp_plot(
               <tr><th>Argument</th><th>What to pass</th></tr>
             </thead>
             <tbody>
-              <tr><td><code>formula</code></td><td>Optional IV formula such as <code>y ~ d + x1 + x2 | z + x1 + x2</code>.</td></tr>
+              <tr><td><code>formula</code></td><td>Optional local CP formula. For outcome <code>y</code>, treatment <code>d</code>, binary IV <code>z</code>, and covariates <code>x1</code> and <code>x2</code>, use <code>y ~ d + x1 + x2 | z + x1 + x2</code>.</td></tr>
               <tr><td><code>data</code></td><td>A data frame.</td></tr>
               <tr><td><code>e_hat</code></td><td>Optional name of a precomputed IV propensity-score column.</td></tr>
               <tr><td><code>tau_c_hat</code></td><td>Optional name of a precomputed conditional complier treatment-effect column.</td></tr>

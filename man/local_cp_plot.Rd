@@ -10,10 +10,9 @@ local_cp_plot(formula = NULL, data, e_hat = NULL,
   title = NULL, alpha = 0.35, point_size = 0.8)
 }
 \arguments{
-\item{formula}{Optional IV formula of the form
-\code{y ~ d + x1 + x2 | z + x1 + x2}. The first right-hand-side block gives
-the binary treatment followed by covariates; the block after \code{|} gives the
-binary IV followed by the same covariates.}
+\item{formula}{Optional local CP formula. For outcome \code{y}, treatment
+\code{d}, binary IV \code{z}, and covariates \code{x1} and \code{x2}, use
+\code{y ~ d + x1 + x2 | z + x1 + x2}.}
 \item{data}{A data frame.}
 \item{e_hat}{Optional character name of the estimated IV propensity-score column.}
 \item{tau_c_hat}{Optional character name of the estimated conditional complier treatment effect column.}

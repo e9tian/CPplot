@@ -9,9 +9,9 @@ cp_plot(formula = NULL, data, e_hat = NULL, tau_hat = NULL,
   title = NULL, alpha = 0.45, point_size = 1)
 }
 \arguments{
-\item{formula}{Optional formula of the form \code{y ~ z + x1 + x2}. The first
-right-hand-side variable is the binary treatment and the remaining variables
-are covariates.}
+\item{formula}{Optional formula. For outcome \code{y}, binary treatment
+\code{z}, and covariates \code{x1} and \code{x2}, use
+\code{y ~ z + x1 + x2}.}
 \item{data}{A data frame.}
 \item{e_hat}{Optional character name of the estimated propensity-score column.}
 \item{tau_hat}{Optional character name of the estimated CATE column.}
