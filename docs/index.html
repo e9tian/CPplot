@@ -105,9 +105,16 @@ fit$plot</code></pre>
             </figure>
           </div>
           <div class="output-block">
-            <h3>Output</h3>
+            <h3>Numerical diagnostics</h3>
+            <p>
+              Use <code>fit$slopes</code> to report the fitted-line slopes and
+              <code>fit$bracketing</code> to report the corresponding
+              bracketing implications. <code>fit$bracketing_summary</code>
+              gives a compact text summary of the ATO bracketing diagnostic.
+            </p>
             <pre><button class="copy" type="button">Copy</button><code>fit$slopes
-fit$bracketing</code></pre>
+fit$bracketing
+fit$bracketing_summary</code></pre>
             <pre class="output"><code># fit$slopes
                fit   n    slope  std_error       p_value
 1       Unweighted 900 5.101455 0.09159536 1.501789e-293
@@ -118,7 +125,10 @@ fit$bracketing</code></pre>
                fit    slope slope_sign       implication
 1       Unweighted 5.101455   positive ATT &gt;= ATE &gt;= ATC
 2 Treated weighted 5.760079   positive        ATT &gt;= ATO
-3 Control weighted 4.346009   positive        ATO &gt;= ATC</code></pre>
+3 Control weighted 4.346009   positive        ATO &gt;= ATC
+
+# fit$bracketing_summary
+[1] "The tilted slopes support ATC &lt;= ATO &lt;= ATT."</code></pre>
           </div>
         </section>
 
@@ -157,9 +167,17 @@ fit$plot</code></pre>
             </figure>
           </div>
           <div class="output-block">
-            <h3>Output</h3>
+            <h3>Numerical diagnostics</h3>
+            <p>
+              Use <code>fit$slopes</code> to report the fitted-line slopes and
+              <code>fit$bracketing</code> to report the corresponding local
+              bracketing implications. <code>fit$bracketing_summary</code>
+              gives a compact text summary of the local ATO bracketing
+              diagnostic.
+            </p>
             <pre><button class="copy" type="button">Copy</button><code>fit$slopes
-fit$bracketing</code></pre>
+fit$bracketing
+fit$bracketing_summary</code></pre>
             <pre class="output"><code># fit$slopes
                         fit   n    slope  std_error       p_value
 1         Complier weighted 900 6.541203 0.1677583 2.216206e-195
@@ -174,7 +192,10 @@ fit$bracketing</code></pre>
                           implication
 1 tau_ATT^c &gt;= tau_ATE^c &gt;= tau_ATC^c
 2              tau_ATT^c &gt;= tau_ATO^c
-3              tau_ATO^c &gt;= tau_ATC^c</code></pre>
+3              tau_ATO^c &gt;= tau_ATC^c
+
+# fit$bracketing_summary
+[1] "The tilted slopes support tau_ATC^c &lt;= tau_ATO^c &lt;= tau_ATT^c."</code></pre>
           </div>
         </section>
 
