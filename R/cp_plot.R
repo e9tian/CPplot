@@ -1,32 +1,36 @@
-cp_plot <- function(data, e_hat = NULL, tau_hat = NULL, treatment = NULL,
-                    outcome = NULL, covariates = NULL,
-                    e_method = "logistic", tau_method = "ols",
+cp_plot <- function(formula = NULL, data, e_hat = NULL, tau_hat = NULL,
+                    treatment = NULL, e_method = "logistic", tau_method = "ols",
                     point_labels = c("Control", "Treated"),
                     title = NULL, alpha = 0.45, point_size = 1) {
   point_labels <- validate_point_labels(point_labels)
-  if (is.null(e_hat) || is.null(tau_hat)) {
-    if (!is.null(e_hat) || !is.null(tau_hat)) {
+  if (missing(data)) {
+    stop("data must be provided.", call. = FALSE)
+  }
+
+  if (!is.null(formula)) {
+    if (!is_formula(formula)) {
+      stop("formula must be a formula such as y ~ z + x1 + x2.", call. = FALSE)
+    }
+    if (!is.null(e_hat) || !is.null(tau_hat) || !is.null(treatment)) {
       stop(
-        "Provide both e_hat and tau_hat, or provide outcome, treatment, and covariates.",
+        "Use either formula mode or fitted nuisance mode, not both.",
         call. = FALSE
       )
     }
-    if (is.null(outcome) || is.null(treatment) || is.null(covariates)) {
-      stop(
-        "Provide e_hat and tau_hat, or provide outcome, treatment, and covariates.",
-        call. = FALSE
-      )
-    }
+    parsed <- parse_cp_formula(formula)
     data <- estimate_cp_inputs(
       data,
-      outcome = outcome,
-      treatment = treatment,
-      covariates = covariates,
+      outcome = parsed$outcome,
+      treatment = parsed$treatment,
+      covariates = parsed$covariates,
       e_method = e_method,
       tau_method = tau_method
     )
     e_hat <- "e_hat"
     tau_hat <- "tau_hat"
+    treatment <- parsed$treatment
+  } else if (is.null(e_hat) || is.null(tau_hat)) {
+    stop("Provide a formula, or provide e_hat and tau_hat.", call. = FALSE)
   }
 
   e <- col_data(data, e_hat, "e_hat")

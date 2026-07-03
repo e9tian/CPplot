@@ -12,6 +12,28 @@ test_that("estimate_cp_inputs returns e_hat and tau_hat", {
   expect_true(all(is.finite(out$tau_hat)))
 })
 
+test_that("parse_cp_formula extracts outcome, treatment, and covariates", {
+  parsed <- CPplot:::parse_cp_formula(y ~ z + x1 + x2)
+  expect_equal(parsed$outcome, "y")
+  expect_equal(parsed$treatment, "z")
+  expect_equal(parsed$covariates, c("x1", "x2"))
+})
+
+test_that("parse_local_cp_formula extracts outcome, treatment, iv, and covariates", {
+  parsed <- CPplot:::parse_local_cp_formula(y ~ d + x1 + x2 | z + x1 + x2)
+  expect_equal(parsed$outcome, "y")
+  expect_equal(parsed$treatment, "d")
+  expect_equal(parsed$iv, "z")
+  expect_equal(parsed$covariates, c("x1", "x2"))
+})
+
+test_that("parse_local_cp_formula requires matching covariates", {
+  expect_error(
+    CPplot:::parse_local_cp_formula(y ~ d + x1 | z + x2),
+    "same covariates"
+  )
+})
+
 test_that("estimate_cp_inputs supports random forest methods when ranger is installed", {
   testthat::skip_if_not_installed("ranger")
   set.seed(11)

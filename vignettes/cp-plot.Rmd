@@ -18,12 +18,7 @@ df$y <- 1 + 0.5 * df$x1 + 0.4 * df$x2 +
   df$z * (0.5 + 0.8 * df$x1 - 0.5 * df$x2) +
   rnorm(n, sd = 0.8)
 
-fit <- cp_plot(
-  df,
-  outcome = "y",
-  treatment = "z",
-  covariates = c("x1", "x2")
-)
+fit <- cp_plot(y ~ z + x1 + x2, data = df)
 fit$plot
 fit$slopes
 fit$bracketing

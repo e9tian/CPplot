@@ -76,7 +76,7 @@ make_paper_cp_plot <- function(file) {
   }
 
   fit <- CPplot::cp_plot(
-    df,
+    data = df,
     e_hat = "propensity_scores",
     tau_hat = "tau_hat",
     treatment = treatment,
@@ -164,11 +164,11 @@ make_401k_local_cp_plot <- function(paper_dir, output_dir) {
   names(unit_summary)[names(unit_summary) == "ehat"] <- "e_hat"
 
   fit <- CPplot::local_cp_plot(
-    unit_summary,
+    data = unit_summary,
     e_hat = "e_hat",
     tau_c_hat = "tau_c_hat",
     pi_c_hat = "delta_d",
-    group = "Z",
+    iv = "Z",
     title = expression(paste("401(k) application: local CP plot of ", hat(tau)^c * (X), " vs ", hat(e)(X)))
   )
 

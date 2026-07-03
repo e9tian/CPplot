@@ -2,22 +2,21 @@
 \alias{cp_plot}
 \title{Draw a CP plot}
 \usage{
-cp_plot(data, e_hat = NULL, tau_hat = NULL, treatment = NULL,
-  outcome = NULL, covariates = NULL,
+cp_plot(formula = NULL, data, e_hat = NULL, tau_hat = NULL,
+  treatment = NULL,
   e_method = "logistic", tau_method = "ols",
   point_labels = c("Control", "Treated"),
   title = NULL, alpha = 0.45, point_size = 1)
 }
 \arguments{
+\item{formula}{Optional formula of the form \code{y ~ z + x1 + x2}. The first
+right-hand-side variable is the binary treatment and the remaining variables
+are covariates.}
 \item{data}{A data frame.}
 \item{e_hat}{Optional character name of the estimated propensity-score column.}
 \item{tau_hat}{Optional character name of the estimated CATE column.}
-\item{treatment}{Character name of a 0/1 treatment indicator column. Required
-when estimating default inputs and optional when \code{e_hat} and
-\code{tau_hat} are supplied.}
-\item{outcome}{Optional character name of the outcome column. Used with
-\code{treatment} and \code{covariates} to estimate default inputs.}
-\item{covariates}{Optional character vector of covariate column names.}
+\item{treatment}{Optional character name of a 0/1 treatment indicator column
+used for point shapes when \code{e_hat} and \code{tau_hat} are supplied.}
 \item{e_method}{Propensity-score method. One of \code{"logistic"} or
 \code{"random_forest"}.}
 \item{tau_method}{CATE method. One of \code{"ols"} or
@@ -34,8 +33,8 @@ A \code{CPplot_result} object with elements \code{plot}, \code{slopes},
 \description{
 Draws a diagnostic plot of estimated CATEs against estimated propensity scores
 and adds full-sample linear fits with weights \eqn{1}, \eqn{\hat e(X)}, and
-\eqn{1-\hat e(X)}. Users can either supply precomputed \code{e_hat} and
-\code{tau_hat} columns or supply \code{outcome}, \code{treatment}, and
-\code{covariates} for default estimation. When \code{treatment} is supplied, it
-controls the point shapes but not the regression samples.
+\eqn{1-\hat e(X)}. Users can either supply a formula for default estimation or
+supply precomputed \code{e_hat} and \code{tau_hat} columns. When
+\code{treatment} is supplied in fitted-input mode, it controls the point shapes
+but not the regression samples.
 }

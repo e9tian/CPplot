@@ -66,14 +66,14 @@ cp_slopes <- function(data, e_hat, tau_hat, treatment = NULL) {
   out
 }
 
-local_cp_slopes <- function(data, e_hat, tau_c_hat, pi_c_hat, group = NULL) {
+local_cp_slopes <- function(data, e_hat, tau_c_hat, pi_c_hat, iv = NULL) {
   e <- col_data(data, e_hat, "e_hat")
   tau <- col_data(data, tau_c_hat, "tau_c_hat")
   pi_c <- col_data(data, pi_c_hat, "pi_c_hat")
-  z <- col_data(data, group, "group")
+  z <- col_data(data, iv, "iv")
   ok <- finite_complete(e, tau, pi_c) & pi_c > 0
   if (!is.null(z)) {
-    validate_binary_indicator(z, arg = "group")
+    validate_binary_indicator(z, arg = "iv")
     ok <- ok & is.finite(z)
   }
 

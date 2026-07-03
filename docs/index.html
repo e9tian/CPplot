@@ -21,27 +21,22 @@
       <input class="search" id="nav-search" type="search" placeholder="Quick search">
       <nav aria-label="Documentation navigation">
         <div class="nav-group">
-          <p class="nav-title">Start</p>
+          <p class="nav-title">Home</p>
           <a class="nav-link" href="#overview">Overview</a>
           <a class="nav-link" href="#installation">Installation</a>
-          <a class="nav-link" href="#workflow">Workflow</a>
-          <a class="nav-link" href="#interpretation">What slopes mean</a>
-        </div>
-        <div class="nav-group">
-          <p class="nav-title">Tutorials</p>
-          <a class="nav-link" href="#cp-plot">Observational CP plot</a>
+          <a class="nav-link" href="#cp-plot">CP plot</a>
           <a class="nav-link" href="#local-cp-plot">Local CP plot</a>
-          <a class="nav-link" href="#helpers">Estimation helpers</a>
-          <a class="nav-link" href="#paper-demo">Paper demo data</a>
+          <a class="nav-link" href="#interpretation">Diagnostic lines</a>
+          <a class="nav-link" href="#advanced">Fitted inputs</a>
         </div>
         <div class="nav-group">
           <p class="nav-title">Reference</p>
-          <a class="nav-link" href="#api">API reference</a>
+          <a class="nav-link" href="api.html">API reference</a>
           <a class="nav-link" href="#citation">Citation</a>
         </div>
       </nav>
       <div class="sidebar-footer">
-        Built for Tian, P., Yang, F., &amp; Ding, P. (2026). Inspired by compact Sphinx-style documentation pages.
+        Tian, P., Yang, F., &amp; Ding, P. (2026).
       </div>
     </aside>
 
@@ -49,25 +44,21 @@
       <div class="topbar">
         <a href="https://github.com/e9tian/CPplot">GitHub</a>
         <a href="https://arxiv.org/abs/2606.11715">Paper</a>
-        <a href="#installation">Install</a>
+        <a href="api.html">API</a>
       </div>
 
       <main>
         <section class="intro" id="overview">
           <p class="eyebrow">Diagnostic visualization for causal estimands</p>
-          <h1>CP plots and local CP plots in a few lines of R.</h1>
+          <h1>CP plots and local CP plots in R.</h1>
           <p class="lead">
-            CPplot implements CP-plots of estimated conditional average treatment
-            effects against estimated propensity scores. Motivated by covariance
-            representations for weighted average treatment effects, these plots
-            diagnose how treatment-effect heterogeneity varies with treatment
-            propensity and how that pattern connects to bracketing relationships
-            among weighted causal estimands. The package also provides local
-            CP-plots for instrumental-variable studies.
+            CPplot draws estimated treatment effects against estimated propensity
+            scores and returns the diagnostic linear fits used to read
+            bracketing relationships among weighted causal estimands.
           </p>
           <div class="quick-actions">
-            <a class="button primary" href="#cp-plot">Start the tutorial</a>
-            <a class="button" href="#api">View API reference</a>
+            <a class="button primary" href="#cp-plot">Run the first example</a>
+            <a class="button" href="api.html">View API reference</a>
           </div>
           <figure class="hero-visual">
             <img src="assets/cpplot-logo-square-white.svg" alt="CPplot logo">
@@ -76,52 +67,117 @@
 
         <section id="installation">
           <h2>Installation</h2>
-          <p>Install the development version from GitHub and load the package.</p>
           <pre><button class="copy" type="button">Copy</button><code>install.packages("remotes")
 remotes::install_github("e9tian/CPplot")
 library(CPplot)</code></pre>
         </section>
 
-        <section id="workflow">
-          <h2>Workflow</h2>
+        <section id="cp-plot">
+          <h2>Observational CP plot</h2>
           <p>
-            CPplot separates estimation from visualization. You can estimate the inputs
-            with any model you like, then pass the resulting columns to the plotting
-            functions.
+            Use a formula. The left-hand side is the outcome; the first
+            right-hand-side variable is the binary treatment; the remaining
+            variables are covariates.
           </p>
-          <div class="note-grid">
-            <div class="note">
-              <strong>Estimate inputs</strong>
-              <p>Compute propensity scores and conditional treatment-effect summaries.</p>
+          <div class="tutorial-block">
+            <div class="panel">
+              <h3>Example</h3>
+              <pre><button class="copy" type="button">Copy</button><code>set.seed(1)
+n <- 900
+df <- data.frame(x1 = rnorm(n), x2 = rnorm(n))
+df$z <- rbinom(n, 1, plogis(-0.30 + 1.05 * df$x1 - 0.45 * df$x2))
+df$y <- 1 + 0.5 * df$x1 + 0.4 * df$x2 +
+  df$z * (0.5 + 1.4 * df$x1 - 0.6 * df$x2) +
+  rnorm(n, sd = 0.7)
+
+fit <- cp_plot(y ~ z + x1 + x2, data = df)
+fit$plot</code></pre>
             </div>
-            <div class="note">
-              <strong>Draw the plot</strong>
-              <p>Use <code>cp_plot()</code> or <code>local_cp_plot()</code> for diagnostic graphics.</p>
+            <figure class="figure-panel">
+              <img src="assets/cp-plot-example.png" alt="Example observational CP plot">
+              <figcaption class="caption">
+                Points are unit-level fitted CATE summaries; lines are the
+                unweighted, treated-weighted, and control-weighted full-sample fits.
+              </figcaption>
+            </figure>
+          </div>
+          <div class="output-block">
+            <h3>Output</h3>
+            <pre><button class="copy" type="button">Copy</button><code>fit$slopes
+fit$bracketing</code></pre>
+            <pre class="output"><code># fit$slopes
+               fit   n    slope  std_error p_value
+1       Unweighted 900 7.589266 0.04302250       0
+2 Treated weighted 900 7.415186 0.04216743       0
+3 Control weighted 900 7.750906 0.05294152       0
+
+# fit$bracketing
+               fit    slope slope_sign       implication
+1       Unweighted 7.589266   positive ATT &gt;= ATE &gt;= ATC
+2 Treated weighted 7.415186   positive        ATT &gt;= ATO
+3 Control weighted 7.750906   positive        ATO &gt;= ATC</code></pre>
+          </div>
+        </section>
+
+        <section id="local-cp-plot">
+          <h2>Local CP plot for IV studies</h2>
+          <p>
+            Use an <code>ivreg</code>-style formula. The first right-hand-side
+            block contains the treatment and covariates; the block after
+            <code>|</code> contains the IV and the same covariates.
+          </p>
+          <div class="tutorial-block">
+            <div class="panel">
+              <h3>Example</h3>
+              <pre><button class="copy" type="button">Copy</button><code>set.seed(2)
+n <- 900
+df <- data.frame(x1 = rnorm(n), x2 = rnorm(n))
+df$z <- rbinom(n, 1, plogis(-0.25 + 0.95 * df$x1 + 0.35 * df$x2))
+df$d <- rbinom(n, 1, plogis(-0.8 + 1.2 * df$z + 0.4 * df$x1 - 0.2 * df$x2))
+tau <- 0.6 + 1.1 * df$x1 - 0.45 * df$x2
+df$y <- 1 + 0.4 * df$x1 - 0.2 * df$x2 + tau * df$d + rnorm(n, sd = 0.6)
+
+fit <- local_cp_plot(y ~ d + x1 + x2 | z + x1 + x2, data = df)
+fit$plot</code></pre>
             </div>
-            <div class="note">
-              <strong>Read slopes</strong>
-              <p>Use the returned slope table as a compact covariance diagnostic.</p>
-            </div>
+            <figure class="figure-panel">
+              <img src="assets/local-cp-plot-example.png" alt="Example local CP plot">
+              <figcaption class="caption">
+                Local CP plots use full-sample weights
+                <code>pi_c_hat</code>, <code>pi_c_hat * e_hat</code>, and
+                <code>pi_c_hat * (1 - e_hat)</code>.
+              </figcaption>
+            </figure>
+          </div>
+          <div class="output-block">
+            <h3>Output</h3>
+            <pre><button class="copy" type="button">Copy</button><code>fit$slopes
+fit$bracketing</code></pre>
+            <pre class="output"><code># fit$slopes
+                        fit   n    slope  std_error       p_value
+1         Complier weighted 900 5.059980 0.09484783 1.188898e-280
+2 Treated-complier weighted 900 4.578982 0.08243187 9.440824e-293
+3 Control-complier weighted 900 5.552853 0.12264241 5.104692e-234
+
+# fit$bracketing
+                        fit    slope slope_sign
+1         Complier weighted 5.059980   positive
+2 Treated-complier weighted 4.578982   positive
+3 Control-complier weighted 5.552853   positive
+                          implication
+1 tau_ATT^c &gt;= tau_ATE^c &gt;= tau_ATC^c
+2              tau_ATT^c &gt;= tau_ATO^c
+3              tau_ATO^c &gt;= tau_ATC^c</code></pre>
           </div>
         </section>
 
         <section id="interpretation">
           <h2>What the diagnostic lines tell you</h2>
           <p>
-            The CP plot is tied to the exact bracketing results in the paper.
-            In the observational setting, the exact bracketing corollary shows
-            that the signs of covariance terms involving the CATE
-            <code>tau(X)</code> and the propensity score <code>e(X)</code>
-            determine the ordering of ATE, ATT, ATC, and ATO. The three fitted
-            lines in a CP plot estimate those covariance signs.
+            Read the slope signs as diagnostics. A positive fitted slope gives
+            the implication listed below; a negative fitted slope reverses the
+            corresponding inequality.
           </p>
-          <div class="callout">
-            <p>
-              Read the slope signs as diagnostics. A positive fitted slope gives
-              the implication listed below; a negative fitted slope reverses the
-              corresponding inequality.
-            </p>
-          </div>
           <table class="interpretation-table">
             <thead>
               <tr>
@@ -139,13 +195,13 @@ library(CPplot)</code></pre>
                 <td><code>tau_ATT &gt;= tau_ATE &gt;= tau_ATC</code></td>
               </tr>
               <tr>
-                <td>Treated-tilted linear fit</td>
+                <td>Treated-weighted linear fit</td>
                 <td><code>e_hat_i</code></td>
                 <td><code>cov{tau(X), e(X) | Z = 1}</code></td>
                 <td><code>tau_ATT &gt;= tau_ATO</code></td>
               </tr>
               <tr>
-                <td>Control-tilted linear fit</td>
+                <td>Control-weighted linear fit</td>
                 <td><code>1 - e_hat_i</code></td>
                 <td><code>cov{tau(X), e(X) | Z = 0}</code></td>
                 <td><code>tau_ATO &gt;= tau_ATC</code></td>
@@ -153,12 +209,6 @@ library(CPplot)</code></pre>
             </tbody>
           </table>
 
-          <p>
-            The local CP plot uses the same logic under the complier
-            distribution. Replace the CATE by the conditional complier treatment
-            effect <code>tau^c(X)</code>, and use the estimated principal score
-            <code>pi_c_hat</code> as the complier weight.
-          </p>
           <table class="interpretation-table">
             <thead>
               <tr>
@@ -191,368 +241,30 @@ library(CPplot)</code></pre>
           </table>
         </section>
 
-        <section id="cp-plot">
-          <h2>Observational CP plot</h2>
+        <section id="advanced">
+          <h2>Already have fitted nuisance functions?</h2>
           <p>
-            In an observational study, the CP plot compares unit-level estimated CATEs
-            <code>tau_hat</code> with estimated propensity scores <code>e_hat</code>.
-            The three fitted lines use full-sample weights <code>1</code>,
-            <code>e_hat</code>, and <code>1 - e_hat</code>.
+            Pass fitted columns directly. This is useful after causal forests,
+            BART, SuperLearner, xgboost, or your own estimator.
           </p>
-          <div class="tutorial-block">
-            <div class="panel">
-              <h3>Minimal example</h3>
-              <pre><button class="copy" type="button">Copy</button><code>library(CPplot)
-
-set.seed(1)
-n <- 900
-df <- data.frame(x1 = rnorm(n), x2 = rnorm(n))
-df$e_hat <- plogis(-0.30 + 1.05 * df$x1 - 0.45 * df$x2)
-df$z <- rbinom(n, 1, df$e_hat)
-df$tau_hat <- -0.75 + 2.40 * df$e_hat +
-  5.20 * (df$e_hat - 0.52)^2 +
-  0.42 * df$x2 + rnorm(n, sd = 0.24)
-
-fit <- cp_plot(
-  df,
+          <pre><button class="copy" type="button">Copy</button><code>cp_plot(
+  data = df,
   e_hat = "e_hat",
   tau_hat = "tau_hat",
   treatment = "z"
 )
 
-fit$plot</code></pre>
-            </div>
-            <figure class="figure-panel">
-              <img src="assets/cp-plot-example.png" alt="Example observational CP plot">
-              <figcaption class="caption">
-                Points show unit-level CATE summaries. Lines are unweighted,
-                treated-weighted, and control-weighted full-sample fits.
-              </figcaption>
-            </figure>
-          </div>
-          <div class="output-block">
-            <h3>Numerical diagnostics</h3>
-            <pre><button class="copy" type="button">Copy</button><code>fit$slopes
-fit$bracketing</code></pre>
-            <pre class="output"><code># fit$slopes
-               fit   n     slope  std_error      p_value
-1       Unweighted 900 1.0610430 0.07819181 2.726416e-38
-2 Treated weighted 900 1.9077236 0.08060820 1.292857e-96
-3 Control weighted 900 0.2991324 0.08803260 7.087170e-04
-
-# fit$bracketing
-               fit     slope slope_sign       implication
-1       Unweighted 1.0610430   positive ATT &gt;= ATE &gt;= ATC
-2 Treated weighted 1.9077236   positive        ATT &gt;= ATO
-3 Control weighted 0.2991324   positive        ATO &gt;= ATC</code></pre>
-          </div>
-          <table>
-            <thead>
-              <tr>
-                <th>Returned object</th>
-                <th>Meaning</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><code>fit$plot</code></td>
-                <td>The ggplot object, ready to print or customize.</td>
-              </tr>
-              <tr>
-                <td><code>fit$slopes</code></td>
-                <td>Slopes, standard errors, and p-values for the three diagnostic fits.</td>
-              </tr>
-              <tr>
-                <td><code>fit$bracketing</code></td>
-                <td>Slope signs and their bracketing implications.</td>
-              </tr>
-              <tr>
-                <td><code>fit$bracketing_summary</code></td>
-                <td>A compact text summary of the ATO bracketing diagnostic.</td>
-              </tr>
-              <tr>
-                <td><code>fit$data_used</code></td>
-                <td>The finite observations retained after filtering missing or nonfinite inputs.</td>
-              </tr>
-            </tbody>
-          </table>
-        </section>
-
-        <section id="local-cp-plot">
-          <h2>Local CP plot for IV studies</h2>
-          <p>
-            In an IV study, replace the CATE by an estimated conditional complier
-            treatment effect. Under the IV assumptions used in the paper,
-            <code>pi_c_hat</code> can be the estimated conditional first stage.
-          </p>
-          <div class="tutorial-block">
-            <div class="panel">
-              <h3>Minimal example</h3>
-              <pre><button class="copy" type="button">Copy</button><code>library(CPplot)
-
-set.seed(2)
-n <- 900
-df <- data.frame(x1 = rnorm(n), x2 = rnorm(n))
-df$e_hat <- plogis(-0.25 + 0.95 * df$x1 + 0.35 * df$x2)
-df$z <- rbinom(n, 1, df$e_hat)
-df$pi_c_hat <- pmax(
-  0.04,
-  plogis(-0.35 + 1.05 * df$x1 - 0.95 * df$x2)
-)
-df$tau_c_hat <- -0.55 + 1.20 * df$e_hat +
-  5.60 * (df$e_hat - 0.48)^2 +
-  0.58 * df$x2 + rnorm(n, sd = 0.28)
-
-fit <- local_cp_plot(
-  df,
+local_cp_plot(
+  data = df,
   e_hat = "e_hat",
   tau_c_hat = "tau_c_hat",
   pi_c_hat = "pi_c_hat",
-  group = "z"
-)
-
-fit$plot</code></pre>
-            </div>
-            <figure class="figure-panel">
-              <img src="assets/local-cp-plot-example.png" alt="Example local CP plot">
-              <figcaption class="caption">
-                Local CP plots use full-sample weights
-                <code>pi_c</code>, <code>pi_c * e_hat</code>, and
-                <code>pi_c * (1 - e_hat)</code>.
-              </figcaption>
-            </figure>
-          </div>
-          <div class="output-block">
-            <h3>Numerical diagnostics</h3>
-            <pre><button class="copy" type="button">Copy</button><code>fit$slopes
-fit$bracketing</code></pre>
-            <pre class="output"><code># fit$slopes
-                        fit   n    slope  std_error       p_value
-1         Complier weighted 900 2.660192 0.09724592 2.528526e-120
-2 Treated-complier weighted 900 3.286171 0.10690743 2.429373e-142
-3 Control-complier weighted 900 2.008876 0.10256607  2.106080e-71
-
-# fit$bracketing
-                        fit    slope slope_sign
-1         Complier weighted 2.660192   positive
-2 Treated-complier weighted 3.286171   positive
-3 Control-complier weighted 2.008876   positive
-                          implication
-1 tau_ATT^c &gt;= tau_ATE^c &gt;= tau_ATC^c
-2              tau_ATT^c &gt;= tau_ATO^c
-3              tau_ATO^c &gt;= tau_ATC^c</code></pre>
-          </div>
-        </section>
-
-        <section id="helpers">
-          <h2>Estimation helpers</h2>
-          <p>
-            CPplot supports two input modes. In the first mode, the package
-            estimates the plotting inputs from an outcome, treatment, and
-            covariates. In the second mode, you supply your own estimated
-            <code>e_hat</code> and <code>tau_hat</code> columns directly.
-          </p>
-          <h3>Mode 1: default estimation</h3>
-          <p>
-            This mode uses logistic regression for <code>e_hat</code> and two
-            OLS outcome regressions for <code>tau_hat</code> by default. You can
-            call the helper explicitly:
-          </p>
-          <pre><button class="copy" type="button">Copy</button><code>df2 <- estimate_cp_inputs(
-  df,
-  outcome = "y",
-  treatment = "z",
-  covariates = c("x1", "x2")
-)
-
-fit <- cp_plot(
-  df2,
-  e_hat = "e_hat",
-  tau_hat = "tau_hat",
-  treatment = "z"
+  iv = "z"
 )</code></pre>
           <p>
-            The same default estimation can be done in one call:
+            See the <a href="api.html">API reference</a> for every argument,
+            helper functions, and bundled paper-demo data.
           </p>
-          <pre><button class="copy" type="button">Copy</button><code>fit <- cp_plot(
-  df,
-  outcome = "y",
-  treatment = "z",
-  covariates = c("x1", "x2")
-)</code></pre>
-          <p>
-            Optional random forest methods are available through the
-            <code>ranger</code> package by setting
-            <code>e_method = "random_forest"</code> and/or
-            <code>tau_method = "random_forest"</code>.
-          </p>
-          <h3>Mode 2: precomputed inputs</h3>
-          <p>
-            If you have already estimated unit-level
-            <code>hat(e)(X_i)</code> and <code>hat(tau)(X_i)</code> using causal
-            forests, BART, SuperLearner, xgboost, or another model, pass those
-            columns directly:
-          </p>
-          <pre><button class="copy" type="button">Copy</button><code>fit <- cp_plot(
-  df,
-  e_hat = "e_hat",
-  tau_hat = "tau_hat",
-  treatment = "z"
-)</code></pre>
-        </section>
-
-        <section id="paper-demo">
-          <h2>Paper demo data</h2>
-          <p>
-            The package bundles intermediate outputs used to reproduce the paper demo
-            plots. These are estimated propensity scores and treatment-effect summaries,
-            not the full raw-data analysis workflow.
-          </p>
-          <pre><button class="copy" type="button">Copy</button><code>library(CPplot)
-
-paper_datasets()[, c("name", "type", "loader")]
-
-rhc <- load_paper_cp_data("rhc")
-rhc_treat_col <- attr(rhc, "treatment_column")
-head(rhc[, c("propensity_scores", "tau_hat", rhc_treat_col)])
-
-k401 <- load_paper_401k_data()
-head(k401[, c("e_hat", "Z", "delta_d", "tau_c_hat")])</code></pre>
-          <h3>Reproduce package-based paper plots</h3>
-          <pre><button class="copy" type="button">Copy</button><code>source(system.file(
-  "paper-examples/reproduce-paper-plots.R",
-  package = "CPplot"
-))
-
-reproduce_paper_plots()</code></pre>
-        </section>
-
-        <section id="api">
-          <h2>API reference</h2>
-          <p>
-            All plotting functions accept column names as strings. This makes it
-            easy to use CPplot after estimating the inputs with any modeling
-            workflow.
-          </p>
-
-          <article class="api-entry">
-            <h3><code>cp_plot()</code></h3>
-            <pre class="signature"><code>cp_plot(data, e_hat = NULL, tau_hat = NULL, treatment = NULL,
-        outcome = NULL, covariates = NULL,
-        e_method = "logistic", tau_method = "ols",
-        point_labels = c("Control", "Treated"),
-        title = NULL, alpha = 0.45, point_size = 1)</code></pre>
-            <p>Draw an observational CP plot from precomputed inputs, or estimate default inputs from an outcome, treatment, and covariates.</p>
-            <table class="api-table">
-              <thead>
-                <tr><th>Argument</th><th>What to pass</th></tr>
-              </thead>
-              <tbody>
-                <tr><td><code>data</code></td><td>A data frame containing the plotting inputs.</td></tr>
-                <tr><td><code>e_hat</code></td><td>Optional name of the estimated propensity-score column, <code>hat(e)(X)</code>.</td></tr>
-                <tr><td><code>tau_hat</code></td><td>Optional name of the estimated CATE column, <code>hat(tau)(X)</code>.</td></tr>
-                <tr><td><code>treatment</code></td><td>0/1 treatment column. Required for default estimation and optional for point shapes when <code>e_hat</code> and <code>tau_hat</code> are supplied.</td></tr>
-                <tr><td><code>outcome</code></td><td>Outcome column used with <code>treatment</code> and <code>covariates</code> for default estimation.</td></tr>
-                <tr><td><code>covariates</code></td><td>Covariate column names for default estimation.</td></tr>
-                <tr><td><code>e_method</code></td><td><code>logistic</code> or <code>random_forest</code>.</td></tr>
-                <tr><td><code>tau_method</code></td><td><code>ols</code> or <code>random_forest</code>.</td></tr>
-                <tr><td><code>point_labels</code></td><td>Two labels for the 0 and 1 point groups. Default is <code>Control</code> and <code>Treated</code>.</td></tr>
-                <tr><td><code>title</code></td><td>Optional ggplot title.</td></tr>
-                <tr><td><code>alpha</code>, <code>point_size</code></td><td>Point transparency and size.</td></tr>
-              </tbody>
-            </table>
-            <p>
-              Returns a <code>CPplot_result</code> list with <code>plot</code>,
-              <code>slopes</code>, <code>bracketing</code>,
-              <code>bracketing_summary</code>, and <code>data_used</code>.
-            </p>
-          </article>
-
-          <article class="api-entry">
-            <h3><code>local_cp_plot()</code></h3>
-            <pre class="signature"><code>local_cp_plot(data, e_hat, tau_c_hat, pi_c_hat, group = NULL,
-              point_labels = c("Control", "Treated"),
-              title = NULL, alpha = 0.35, point_size = 0.8)</code></pre>
-            <p>Draw a local CP plot for an IV study.</p>
-            <table class="api-table">
-              <thead>
-                <tr><th>Argument</th><th>What to pass</th></tr>
-              </thead>
-              <tbody>
-                <tr><td><code>data</code></td><td>A data frame containing the local CP plotting inputs.</td></tr>
-                <tr><td><code>e_hat</code></td><td>Name of the estimated IV propensity-score column, <code>hat(e)(X)</code>.</td></tr>
-                <tr><td><code>tau_c_hat</code></td><td>Name of the estimated conditional complier treatment-effect column, <code>hat(tau)^c(X)</code>.</td></tr>
-                <tr><td><code>pi_c_hat</code></td><td>Name of the estimated principal-score column. Under the IV assumptions, this is the estimated conditional first stage.</td></tr>
-                <tr><td><code>group</code></td><td>Optional 0/1 IV group column used for point shapes. The three fitted lines use all finite observations with weights <code>pi_c_hat</code>, <code>pi_c_hat * e_hat</code>, and <code>pi_c_hat * (1 - e_hat)</code>.</td></tr>
-                <tr><td><code>point_labels</code></td><td>Two labels for the 0 and 1 point groups. Default is <code>Control</code> and <code>Treated</code>.</td></tr>
-                <tr><td><code>title</code>, <code>alpha</code>, <code>point_size</code></td><td>Optional plot title and point styling.</td></tr>
-              </tbody>
-            </table>
-            <p>
-              Returns a <code>CPplot_result</code> list with <code>plot</code>,
-              <code>slopes</code>, <code>bracketing</code>,
-              <code>bracketing_summary</code>, and <code>data_used</code>. Rows with
-              nonpositive or nonfinite <code>pi_c_hat</code> are dropped.
-            </p>
-          </article>
-
-          <article class="api-entry">
-            <h3>Slope helpers</h3>
-            <pre class="signature"><code>cp_slopes(data, e_hat, tau_hat, treatment = NULL)
-local_cp_slopes(data, e_hat, tau_c_hat, pi_c_hat, group = NULL)</code></pre>
-            <table class="api-table">
-              <thead>
-                <tr><th>Function</th><th>Output</th></tr>
-              </thead>
-              <tbody>
-                <tr><td><code>cp_slopes()</code></td><td>A data frame with one row each for the unweighted, treated-weighted, and control-weighted linear fits.</td></tr>
-                <tr><td><code>local_cp_slopes()</code></td><td>A data frame with one row each for the complier-weighted, treated-complier-weighted, and control-complier-weighted linear fits.</td></tr>
-              </tbody>
-            </table>
-            <p>
-              Each slope table contains <code>fit</code>, <code>n</code>,
-              <code>slope</code>, <code>std_error</code>, and
-              <code>p_value</code>.
-            </p>
-          </article>
-
-          <article class="api-entry">
-            <h3>Simple estimation helpers</h3>
-            <pre class="signature"><code>estimate_cp_inputs(data, outcome, treatment, covariates,
-                   e_method = "logistic", tau_method = "ols",
-                   family = stats::binomial())
-
-estimate_local_cp_inputs(data, outcome, treatment, instrument, covariates,
-                         e_method = "logistic", contrast_method = "ols",
-                         family = stats::binomial(),
-                         min_first_stage = 1e-6)</code></pre>
-            <table class="api-table">
-              <thead>
-                <tr><th>Function</th><th>Inputs and output</th></tr>
-              </thead>
-              <tbody>
-                <tr><td><code>estimate_cp_inputs()</code></td><td>Pass outcome, treatment, and covariates. It returns the original data plus <code>e_hat</code> and <code>tau_hat</code>.</td></tr>
-                <tr><td><code>estimate_local_cp_inputs()</code></td><td>Pass outcome, treatment, instrument, and covariates. It returns the original data plus <code>e_hat</code>, <code>delta_y</code>, <code>delta_d</code>, <code>pi_c_hat</code>, and <code>tau_c_hat</code>.</td></tr>
-              </tbody>
-            </table>
-          </article>
-
-          <article class="api-entry">
-            <h3>Bundled paper data</h3>
-            <pre class="signature"><code>paper_datasets()
-load_paper_cp_data(setting)
-load_paper_401k_data()</code></pre>
-            <table class="api-table">
-              <thead>
-                <tr><th>Function</th><th>Output</th></tr>
-              </thead>
-              <tbody>
-                <tr><td><code>paper_datasets()</code></td><td>An index with dataset name, type, treatment column, loader, and description.</td></tr>
-                <tr><td><code>load_paper_cp_data(setting)</code></td><td>One observational paper-demo dataset with <code>propensity_scores</code>, <code>tau_hat</code>, and the relevant treatment column.</td></tr>
-                <tr><td><code>load_paper_401k_data()</code></td><td>The 401(k) local CP dataset with <code>e_hat</code>, <code>Z</code>, <code>delta_d</code>, and <code>tau_c_hat</code>.</td></tr>
-              </tbody>
-            </table>
-          </article>
         </section>
 
         <section id="citation">

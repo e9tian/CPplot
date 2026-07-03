@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CPplot API reference</title>
+  <meta name="description" content="API reference for the CPplot R package.">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">CP</div>
+        <div>
+          <div class="brand-title">CPplot</div>
+          <div class="brand-subtitle">API reference</div>
+        </div>
+      </div>
+      <input class="search" id="nav-search" type="search" placeholder="Quick search">
+      <nav aria-label="Documentation navigation">
+        <div class="nav-group">
+          <p class="nav-title">Home</p>
+          <a class="nav-link" href="index.html">Tutorial home</a>
+        </div>
+        <div class="nav-group">
+          <p class="nav-title">Functions</p>
+          <a class="nav-link" href="#cp-plot">cp_plot()</a>
+          <a class="nav-link" href="#local-cp-plot">local_cp_plot()</a>
+          <a class="nav-link" href="#slopes">Slope helpers</a>
+          <a class="nav-link" href="#estimation">Estimation helpers</a>
+          <a class="nav-link" href="#paper-data">Paper data</a>
+          <a class="nav-link" href="#citation">Citation</a>
+        </div>
+      </nav>
+      <div class="sidebar-footer">
+        Formula-first API with fitted-input escape hatches.
+      </div>
+    </aside>
+
+    <div class="content">
+      <div class="topbar">
+        <a href="index.html">Tutorial</a>
+        <a href="https://github.com/e9tian/CPplot">GitHub</a>
+        <a href="https://arxiv.org/abs/2606.11715">Paper</a>
+      </div>
+
+      <main>
+        <section class="intro">
+          <p class="eyebrow">Reference</p>
+          <h1>API reference.</h1>
+          <p class="lead">
+            The two main plotting functions accept raw-data formulas or
+            precomputed fitted nuisance columns. Both return a
+            <code>CPplot_result</code>.
+          </p>
+        </section>
+
+        <section id="cp-plot">
+          <h2><code>cp_plot()</code></h2>
+          <pre class="signature"><code>cp_plot(formula = NULL, data, e_hat = NULL, tau_hat = NULL,
+        treatment = NULL, e_method = "logistic", tau_method = "ols",
+        point_labels = c("Control", "Treated"),
+        title = NULL, alpha = 0.45, point_size = 1)</code></pre>
+          <p>Draw an observational CP plot.</p>
+          <table class="api-table">
+            <thead>
+              <tr><th>Argument</th><th>What to pass</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>formula</code></td><td>Optional formula such as <code>y ~ z + x1 + x2</code>. The first right-hand-side variable is the binary treatment; the remaining variables are covariates.</td></tr>
+              <tr><td><code>data</code></td><td>A data frame.</td></tr>
+              <tr><td><code>e_hat</code></td><td>Optional name of a precomputed propensity-score column.</td></tr>
+              <tr><td><code>tau_hat</code></td><td>Optional name of a precomputed CATE column.</td></tr>
+              <tr><td><code>treatment</code></td><td>Optional 0/1 treatment column for point shapes in fitted-input mode.</td></tr>
+              <tr><td><code>e_method</code></td><td><code>logistic</code> or <code>random_forest</code>.</td></tr>
+              <tr><td><code>tau_method</code></td><td><code>ols</code> or <code>random_forest</code>.</td></tr>
+              <tr><td><code>point_labels</code></td><td>Two labels for 0 and 1 points. Default is <code>Control</code> and <code>Treated</code>.</td></tr>
+              <tr><td><code>title</code>, <code>alpha</code>, <code>point_size</code></td><td>Optional plot title and point styling.</td></tr>
+            </tbody>
+          </table>
+          <pre><button class="copy" type="button">Copy</button><code>fit <- cp_plot(y ~ z + x1 + x2, data = df)
+
+fit <- cp_plot(
+  data = df,
+  e_hat = "e_hat",
+  tau_hat = "tau_hat",
+  treatment = "z"
+)</code></pre>
+        </section>
+
+        <section id="local-cp-plot">
+          <h2><code>local_cp_plot()</code></h2>
+          <pre class="signature"><code>local_cp_plot(formula = NULL, data, e_hat = NULL,
+              tau_c_hat = NULL, pi_c_hat = NULL, iv = NULL,
+              e_method = "logistic", contrast_method = "ols",
+              min_first_stage = 1e-6,
+              point_labels = c("Control", "Treated"),
+              title = NULL, alpha = 0.35, point_size = 0.8)</code></pre>
+          <p>Draw a local CP plot for an IV study.</p>
+          <table class="api-table">
+            <thead>
+              <tr><th>Argument</th><th>What to pass</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>formula</code></td><td>Optional IV formula such as <code>y ~ d + x1 + x2 | z + x1 + x2</code>.</td></tr>
+              <tr><td><code>data</code></td><td>A data frame.</td></tr>
+              <tr><td><code>e_hat</code></td><td>Optional name of a precomputed IV propensity-score column.</td></tr>
+              <tr><td><code>tau_c_hat</code></td><td>Optional name of a precomputed conditional complier treatment-effect column.</td></tr>
+              <tr><td><code>pi_c_hat</code></td><td>Optional name of a precomputed complier score or first-stage column used as weights.</td></tr>
+              <tr><td><code>iv</code></td><td>Optional 0/1 IV column for point shapes in fitted-input mode.</td></tr>
+              <tr><td><code>e_method</code></td><td><code>logistic</code> or <code>random_forest</code>.</td></tr>
+              <tr><td><code>contrast_method</code></td><td><code>ols</code> or <code>random_forest</code>.</td></tr>
+              <tr><td><code>min_first_stage</code></td><td>Threshold for setting unstable conditional Wald ratios to missing in formula mode.</td></tr>
+              <tr><td><code>point_labels</code>, <code>title</code>, <code>alpha</code>, <code>point_size</code></td><td>Optional labels and styling.</td></tr>
+            </tbody>
+          </table>
+          <pre><button class="copy" type="button">Copy</button><code>fit <- local_cp_plot(y ~ d + x1 + x2 | z + x1 + x2, data = df)
+
+fit <- local_cp_plot(
+  data = df,
+  e_hat = "e_hat",
+  tau_c_hat = "tau_c_hat",
+  pi_c_hat = "pi_c_hat",
+  iv = "z"
+)</code></pre>
+        </section>
+
+        <section id="return-value">
+          <h2>Return value</h2>
+          <table class="api-table">
+            <thead>
+              <tr><th>Element</th><th>Meaning</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>plot</code></td><td>The ggplot object.</td></tr>
+              <tr><td><code>slopes</code></td><td>Slopes, standard errors, and p-values for the three diagnostic fits.</td></tr>
+              <tr><td><code>bracketing</code></td><td>Slope signs and their bracketing implications.</td></tr>
+              <tr><td><code>bracketing_summary</code></td><td>A compact text summary of the ATO bracketing diagnostic.</td></tr>
+              <tr><td><code>data_used</code></td><td>The finite observations retained for plotting.</td></tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section id="slopes">
+          <h2>Slope helpers</h2>
+          <pre class="signature"><code>cp_slopes(data, e_hat, tau_hat, treatment = NULL)
+local_cp_slopes(data, e_hat, tau_c_hat, pi_c_hat, iv = NULL)</code></pre>
+          <p>
+            These return the slope table without drawing the plot. The local
+            helper uses weights <code>pi_c_hat</code>,
+            <code>pi_c_hat * e_hat</code>, and
+            <code>pi_c_hat * (1 - e_hat)</code>.
+          </p>
+        </section>
+
+        <section id="estimation">
+          <h2>Estimation helpers</h2>
+          <pre class="signature"><code>estimate_cp_inputs(data, outcome, treatment, covariates,
+                   e_method = "logistic", tau_method = "ols",
+                   family = stats::binomial())
+
+estimate_local_cp_inputs(data, outcome, treatment, instrument, covariates,
+                         e_method = "logistic", contrast_method = "ols",
+                         family = stats::binomial(),
+                         min_first_stage = 1e-6)</code></pre>
+          <table class="api-table">
+            <tbody>
+              <tr><td><code>estimate_cp_inputs()</code></td><td>Returns the original data plus <code>e_hat</code> and <code>tau_hat</code>.</td></tr>
+              <tr><td><code>estimate_local_cp_inputs()</code></td><td>Returns the original data plus <code>e_hat</code>, <code>delta_y</code>, <code>delta_d</code>, <code>pi_c_hat</code>, and <code>tau_c_hat</code>.</td></tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section id="paper-data">
+          <h2>Bundled paper data</h2>
+          <pre class="signature"><code>paper_datasets()
+load_paper_cp_data(setting)
+load_paper_401k_data()</code></pre>
+          <table class="api-table">
+            <tbody>
+              <tr><td><code>paper_datasets()</code></td><td>Dataset index with name, type, treatment column, loader, and description.</td></tr>
+              <tr><td><code>load_paper_cp_data(setting)</code></td><td>One observational paper-demo dataset with <code>propensity_scores</code>, <code>tau_hat</code>, and the treatment column.</td></tr>
+              <tr><td><code>load_paper_401k_data()</code></td><td>The 401(k) local CP dataset with <code>e_hat</code>, <code>Z</code>, <code>delta_d</code>, and <code>tau_c_hat</code>.</td></tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section id="citation">
+          <h2>Citation</h2>
+          <pre><button class="copy" type="button">Copy</button><code>citation("CPplot")</code></pre>
+          <p>
+            Tian, P., Yang, F., &amp; Ding, P. (2026). Bracketing Relationships of
+            Weighted Average Treatment Effects. arXiv preprint arXiv:2606.11715.
+          </p>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    const search = document.getElementById("nav-search");
+    const links = Array.from(document.querySelectorAll(".nav-link"));
+    search.addEventListener("input", () => {
+      const query = search.value.trim().toLowerCase();
+      links.forEach((link) => {
+        const show = link.textContent.toLowerCase().includes(query);
+        link.style.display = show ? "block" : "none";
+      });
+    });
+
+    document.querySelectorAll("pre").forEach((block) => {
+      const button = block.querySelector(".copy");
+      const code = block.querySelector("code");
+      if (!button || !code) return;
+      button.addEventListener("click", async () => {
+        await navigator.clipboard.writeText(code.innerText);
+        const original = button.textContent;
+        button.textContent = "Copied";
+        setTimeout(() => { button.textContent = original; }, 1200);
+      });
+    });
+  </script>
+</body>
+</html>

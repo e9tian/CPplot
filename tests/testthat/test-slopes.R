@@ -24,7 +24,7 @@ test_that("local_cp_slopes returns full-sample complier-weighted slopes", {
     pi_c = c(1, 0.7, 1.3, 1.6, 2, 1.8, 1.2, 0.9),
     z = rep(c(0, 1), each = 4)
   )
-  out <- local_cp_slopes(df, e_hat = "e_hat", tau_c_hat = "tau_c", pi_c_hat = "pi_c", group = "z")
+  out <- local_cp_slopes(df, e_hat = "e_hat", tau_c_hat = "tau_c", pi_c_hat = "pi_c", iv = "z")
   expected <- c(
     unname(coef(stats::lm(tau_c ~ e_hat, data = df, weights = pi_c))[["e_hat"]]),
     unname(coef(stats::lm(tau_c ~ e_hat, data = df, weights = pi_c * e_hat))[["e_hat"]]),
