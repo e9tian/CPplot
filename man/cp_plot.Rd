@@ -6,7 +6,7 @@ cp_plot(formula = NULL, data, e_hat = NULL, tau_hat = NULL,
   treatment = NULL,
   e_method = "logistic", tau_method = "ols",
   point_labels = c("Control", "Treated"),
-  title = NULL, alpha = 0.45, point_size = 1)
+  title = NULL, alpha = 0.35, point_size = 1)
 }
 \arguments{
 \item{formula}{Optional formula. For outcome \code{y}, binary treatment

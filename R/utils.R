@@ -59,7 +59,12 @@ make_grid <- function(x, n = 100L) {
 }
 
 line_palette <- function(labels) {
-  stats::setNames(c("#D55E00", "#0072B2", "#009E73")[seq_along(labels)], labels)
+  stats::setNames(c("#252525", "#0072B2", "#D55E00")[seq_along(labels)], labels)
+}
+
+point_palette <- function(labels) {
+  labels <- validate_point_labels(labels)
+  stats::setNames(c("#D55E00", "#0072B2"), labels)
 }
 
 fit_line <- function(fit_data, response, e_grid, weights = NULL) {

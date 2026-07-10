@@ -1,7 +1,7 @@
 cp_plot <- function(formula = NULL, data, e_hat = NULL, tau_hat = NULL,
                     treatment = NULL, e_method = "logistic", tau_method = "ols",
                     point_labels = c("Control", "Treated"),
-                    title = NULL, alpha = 0.45, point_size = 1) {
+                    title = NULL, alpha = 0.35, point_size = 1) {
   point_labels <- validate_point_labels(point_labels)
   if (missing(data)) {
     stop("data must be provided.", call. = FALSE)
@@ -52,6 +52,7 @@ cp_plot <- function(formula = NULL, data, e_hat = NULL, tau_hat = NULL,
   bracketing_summary <- cp_bracketing_summary(bracketing, local = FALSE)
   labels <- slopes$fit
   colors <- line_palette(labels)
+  point_colors <- point_palette(point_labels)
   e_grid <- make_grid(plot_df$e_hat)
   line_df <- cp_line_data(plot_df, labels, e_grid, point_labels, weighted = FALSE)
 
@@ -61,12 +62,11 @@ cp_plot <- function(formula = NULL, data, e_hat = NULL, tau_hat = NULL,
   } else {
     p <- p +
       ggplot2::geom_point(
-        ggplot2::aes(shape = group),
-        color = "grey45",
+        ggplot2::aes(shape = group, color = group),
         alpha = alpha,
         size = point_size
       ) +
-      ggplot2::scale_shape_manual(values = stats::setNames(c(1, 16), point_labels), name = "Points")
+      ggplot2::scale_shape_manual(values = stats::setNames(c(1, 17), point_labels), name = "Points")
   }
 
   p <- p +
@@ -74,11 +74,15 @@ cp_plot <- function(formula = NULL, data, e_hat = NULL, tau_hat = NULL,
       data = line_df,
       ggplot2::aes(x = e_hat, y = tau_hat, color = fit, linetype = fit),
       inherit.aes = FALSE,
-      linewidth = 0.75
+      linewidth = 0.9
     ) +
-    ggplot2::scale_color_manual(values = colors, breaks = labels, name = "Linear fit") +
+    ggplot2::scale_color_manual(
+      values = c(point_colors, colors),
+      breaks = labels,
+      name = "Linear fit"
+    ) +
     ggplot2::scale_linetype_manual(
-      values = stats::setNames(c("solid", "dashed", "dotdash")[seq_along(labels)], labels),
+      values = stats::setNames(c("solid", "longdash", "dotdash")[seq_along(labels)], labels),
       breaks = labels,
       name = "Linear fit"
     ) +
@@ -89,6 +93,18 @@ cp_plot <- function(formula = NULL, data, e_hat = NULL, tau_hat = NULL,
     ) +
     ggplot2::theme_minimal() +
     ggplot2::theme(legend.position = "bottom") +
+    ggplot2::guides(
+      shape = ggplot2::guide_legend(
+        order = 1,
+        override.aes = list(
+          alpha = 1,
+          size = 2,
+          color = unname(point_colors)
+        )
+      ),
+      color = ggplot2::guide_legend(order = 2, nrow = 1),
+      linetype = ggplot2::guide_legend(order = 2, nrow = 1)
+    ) +
     ggplot2::geom_hline(yintercept = 0, linetype = "solid", color = "black", alpha = 0.7)
 
   new_CPplot_result(

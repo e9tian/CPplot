@@ -22,6 +22,9 @@ test_that("cp_plot supports treated and control point labels", {
   fit <- cp_plot(data = df, e_hat = "e_hat", tau_hat = "tau", treatment = "z")
   expect_equal(levels(fit$data_used$group), c("Control", "Treated"))
   expect_equal(fit$slopes$fit, c("Unweighted", "Treated weighted", "Control weighted"))
+  point_layer <- ggplot2::ggplot_build(fit$plot)$data[[1L]]
+  expect_setequal(unique(point_layer$colour), c("#D55E00", "#0072B2"))
+  expect_setequal(unique(point_layer$shape), c(1, 17))
 })
 
 test_that("cp_plot lines use the same full-sample weighted fits as cp_slopes", {
@@ -80,6 +83,9 @@ test_that("local_cp_plot returns weighted local CP diagnostics", {
   expect_equal(levels(fit$data_used$group), c("Control", "Treated"))
   expect_equal(fit$slopes$fit, c("Complier weighted", "Treated-complier weighted", "Control-complier weighted"))
   expect_true(is.data.frame(fit$bracketing))
+  point_layer <- ggplot2::ggplot_build(fit$plot)$data[[1L]]
+  expect_setequal(unique(point_layer$colour), c("#D55E00", "#0072B2"))
+  expect_setequal(unique(point_layer$shape), c(1, 17))
 })
 
 test_that("local_cp_plot estimates inputs from an IV formula", {

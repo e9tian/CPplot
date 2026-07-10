@@ -112,22 +112,22 @@ make_observational_cp_panel <- function(paper_dir, output_dir) {
     data.frame(setting = fit$setting, fit$slopes, row.names = NULL)
   }))
 
-  line_colors <- c("#D55E00", "#0072B2", "#009E73")
+  line_colors <- c("#252525", "#0072B2", "#D55E00")
   line_labels <- c("Unweighted", "Treated weighted", "Control weighted")
 
   legend <- grid::grobTree(
     grid::textGrob("Points:", x = grid::unit(0.11, "npc"), y = grid::unit(0.72, "npc"), just = "right", gp = grid::gpar(fontsize = 11)),
-    grid::pointsGrob(x = grid::unit(0.15, "npc"), y = grid::unit(0.72, "npc"), pch = 1, gp = grid::gpar(col = "grey60", cex = 0.9)),
-    grid::textGrob("Control points", x = grid::unit(0.18, "npc"), y = grid::unit(0.72, "npc"), just = "left", gp = grid::gpar(fontsize = 11)),
-    grid::pointsGrob(x = grid::unit(0.35, "npc"), y = grid::unit(0.72, "npc"), pch = 16, gp = grid::gpar(col = "grey35", cex = 0.9)),
-    grid::textGrob("Treated points", x = grid::unit(0.38, "npc"), y = grid::unit(0.72, "npc"), just = "left", gp = grid::gpar(fontsize = 11)),
+    grid::pointsGrob(x = grid::unit(0.15, "npc"), y = grid::unit(0.72, "npc"), pch = 1, gp = grid::gpar(col = "#D55E00", cex = 0.9)),
+    grid::textGrob("Control", x = grid::unit(0.18, "npc"), y = grid::unit(0.72, "npc"), just = "left", gp = grid::gpar(fontsize = 11)),
+    grid::pointsGrob(x = grid::unit(0.30, "npc"), y = grid::unit(0.72, "npc"), pch = 17, gp = grid::gpar(col = "#0072B2", cex = 0.9)),
+    grid::textGrob("Treated", x = grid::unit(0.33, "npc"), y = grid::unit(0.72, "npc"), just = "left", gp = grid::gpar(fontsize = 11)),
     grid::textGrob("Linear fit:", x = grid::unit(0.11, "npc"), y = grid::unit(0.30, "npc"), just = "right", gp = grid::gpar(fontsize = 11)),
     grid::segmentsGrob(
       x0 = grid::unit(c(0.15, 0.37, 0.61), "npc"),
       x1 = grid::unit(c(0.20, 0.42, 0.66), "npc"),
       y0 = grid::unit(c(0.30, 0.30, 0.30), "npc"),
       y1 = grid::unit(c(0.30, 0.30, 0.30), "npc"),
-      gp = grid::gpar(col = line_colors, lwd = 2, lty = c("solid", "dashed", "dotdash"))
+      gp = grid::gpar(col = line_colors, lwd = 2.5, lty = c("solid", "longdash", "dotdash"))
     ),
     grid::textGrob(line_labels[[1L]], x = grid::unit(0.22, "npc"), y = grid::unit(0.30, "npc"), just = "left", gp = grid::gpar(fontsize = 11)),
     grid::textGrob(line_labels[[2L]], x = grid::unit(0.44, "npc"), y = grid::unit(0.30, "npc"), just = "left", gp = grid::gpar(fontsize = 11)),
