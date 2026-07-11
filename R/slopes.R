@@ -87,12 +87,12 @@ local_cp_slopes <- function(data, e_hat, tau_c_hat, pi_c_hat, iv = NULL) {
     fit_slope(
       data.frame(y = df$tau, x = df$e),
       weights = df$pi_c * df$e,
-      label = "Treated-complier weighted"
+      label = "Encouraged-complier weighted"
     ),
     fit_slope(
       data.frame(y = df$tau, x = df$e),
       weights = df$pi_c * (1 - df$e),
-      label = "Control-complier weighted"
+      label = "Unencouraged-complier weighted"
     )
   )
   rownames(out) <- NULL

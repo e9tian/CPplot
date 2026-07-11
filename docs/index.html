@@ -139,7 +139,10 @@ fit$bracketing_summary</code></pre>
             <code>z</code> is the binary IV, and <code>x</code> is a covariate,
             a local CP plot can be drawn with
             <code>local_cp_plot(y ~ d + x | z + x, data = df)</code>. The
-            example below uses three covariates in the same way.
+            example below uses three covariates in the same way. By default,
+            points with <code>z = 0</code> are labeled
+            <code>Unencouraged</code>, and points with <code>z = 1</code> are
+            labeled <code>Encouraged</code>.
           </p>
           <div class="tutorial-block">
             <div class="panel">
@@ -179,16 +182,16 @@ fit$plot</code></pre>
 fit$bracketing
 fit$bracketing_summary</code></pre>
             <pre class="output"><code># fit$slopes
-                        fit   n    slope  std_error       p_value
-1         Complier weighted 900 6.541203 0.1677583 2.216206e-195
-2 Treated-complier weighted 900 9.086877 0.1688588 3.131736e-283
-3 Control-complier weighted 900 4.304402 0.1737031 1.034667e-103
+                             fit   n    slope  std_error       p_value
+1              Complier weighted 900 6.541203 0.1677583 2.216206e-195
+2   Encouraged-complier weighted 900 9.086877 0.1688588 3.131736e-283
+3 Unencouraged-complier weighted 900 4.304402 0.1737031 1.034667e-103
 
 # fit$bracketing
-                        fit    slope slope_sign
-1         Complier weighted 6.541203   positive
-2 Treated-complier weighted 9.086877   positive
-3 Control-complier weighted 4.304402   positive
+                             fit    slope slope_sign
+1              Complier weighted 6.541203   positive
+2   Encouraged-complier weighted 9.086877   positive
+3 Unencouraged-complier weighted 4.304402   positive
                           implication
 1 tau_ATT^c &gt;= tau_ATE^c &gt;= tau_ATC^c
 2              tau_ATT^c &gt;= tau_ATO^c
@@ -254,13 +257,13 @@ fit$bracketing_summary</code></pre>
                 <td><code>tau^c_ATT &gt;= tau^c_ATE &gt;= tau^c_ATC</code></td>
               </tr>
               <tr>
-                <td>Instrument-treated complier fit</td>
+                <td>Encouraged-complier weighted fit</td>
                 <td><code>pi_c_hat_i * e_hat_i</code></td>
                 <td><code>cov{tau^c(X), e(X) | U = c, Z = 1}</code></td>
                 <td><code>tau^c_ATT &gt;= tau^c_ATO</code></td>
               </tr>
               <tr>
-                <td>Instrument-control complier fit</td>
+                <td>Unencouraged-complier weighted fit</td>
                 <td><code>pi_c_hat_i * (1 - e_hat_i)</code></td>
                 <td><code>cov{tau^c(X), e(X) | U = c, Z = 0}</code></td>
                 <td><code>tau^c_ATO &gt;= tau^c_ATC</code></td>

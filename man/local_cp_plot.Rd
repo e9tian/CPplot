@@ -6,7 +6,7 @@ local_cp_plot(formula = NULL, data, e_hat = NULL,
   tau_c_hat = NULL, pi_c_hat = NULL, iv = NULL,
   e_method = "logistic", contrast_method = "ols",
   min_first_stage = 1e-6,
-  point_labels = c("Control", "Treated"),
+  point_labels = c("Unencouraged", "Encouraged"),
   title = NULL, alpha = 0.35, point_size = 0.8)
 }
 \arguments{
@@ -25,7 +25,7 @@ fitted-input mode.}
 \code{"ols"} or \code{"random_forest"}.}
 \item{min_first_stage}{First-stage threshold used to set unstable conditional
 Wald ratios to missing in formula mode.}
-\item{point_labels}{Two labels for control and treated points.}
+\item{point_labels}{Two labels for unencouraged and encouraged points.}
 \item{title}{Optional plot title.}
 \item{alpha}{Point alpha.}
 \item{point_size}{Point size.}

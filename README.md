@@ -95,6 +95,9 @@ fit <- local_cp_plot(y ~ d + x1 + x2 | z + x1 + x2, data = df)
 fit$plot
 ```
 
+By default, units with `z = 0` are labeled `Unencouraged`, and units with
+`z = 1` are labeled `Encouraged`.
+
 After drawing the plot, inspect the numerical diagnostics:
 
 ```r

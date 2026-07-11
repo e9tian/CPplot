@@ -112,7 +112,7 @@
               tau_c_hat = NULL, pi_c_hat = NULL, iv = NULL,
               e_method = "logistic", contrast_method = "ols",
               min_first_stage = 1e-6,
-              point_labels = c("Control", "Treated"),
+              point_labels = c("Unencouraged", "Encouraged"),
               title = NULL, alpha = 0.35, point_size = 0.8)</code></pre>
           <p>Draw a local CP plot for an IV study.</p>
           <table class="api-table">
@@ -129,7 +129,7 @@
               <tr><td><code>e_method</code></td><td><code>logistic</code> or <code>random_forest</code>.</td></tr>
               <tr><td><code>contrast_method</code></td><td><code>ols</code> or <code>random_forest</code>.</td></tr>
               <tr><td><code>min_first_stage</code></td><td>Threshold for setting unstable conditional Wald ratios to missing in formula mode.</td></tr>
-              <tr><td><code>point_labels</code>, <code>title</code>, <code>alpha</code>, <code>point_size</code></td><td>Optional labels and styling.</td></tr>
+              <tr><td><code>point_labels</code>, <code>title</code>, <code>alpha</code>, <code>point_size</code></td><td>Optional labels and styling. Point labels default to <code>Unencouraged</code> for IV = 0 and <code>Encouraged</code> for IV = 1.</td></tr>
             </tbody>
           </table>
           <div class="example-modes">

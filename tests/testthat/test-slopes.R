@@ -30,7 +30,7 @@ test_that("local_cp_slopes returns full-sample complier-weighted slopes", {
     unname(coef(stats::lm(tau_c ~ e_hat, data = df, weights = pi_c * e_hat))[["e_hat"]]),
     unname(coef(stats::lm(tau_c ~ e_hat, data = df, weights = pi_c * (1 - e_hat)))[["e_hat"]])
   )
-  expect_equal(out$fit, c("Complier weighted", "Treated-complier weighted", "Control-complier weighted"))
+  expect_equal(out$fit, c("Complier weighted", "Encouraged-complier weighted", "Unencouraged-complier weighted"))
   expect_equal(out$n, rep(nrow(df), 3))
   expect_equal(out$slope, expected)
 })

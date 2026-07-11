@@ -55,6 +55,17 @@ paper_title_labels <- c(
   adult_servicesUnsafe = "adult_services (unsafe)"
 )
 
+paper_setting_order <- c(
+  "rhc",
+  "cavities_smoking",
+  "abortion",
+  "adult_servicesHot",
+  "adult_servicesReg",
+  "adult_servicesUnsafe",
+  "black_politicians",
+  "ccdrug"
+)
+
 make_paper_cp_plot <- function(file) {
   setting <- sub("_data[.]RData$", "", basename(file))
   df <- load_cp_dataframe(file)
@@ -101,10 +112,16 @@ make_observational_cp_panel <- function(paper_dir, output_dir) {
   if (length(files) == 0L) {
     stop("No *_data.RData files found in ", file.path(paper_dir, "res_data"), call. = FALSE)
   }
-  files <- sort(files)
-  if (length(files) >= 8L) {
-    files <- files[seq_len(8L)]
+  file_settings <- sub("_data[.]RData$", "", basename(files))
+  missing_settings <- setdiff(paper_setting_order, file_settings)
+  if (length(missing_settings) > 0L) {
+    stop(
+      "Missing paper settings: ",
+      paste(missing_settings, collapse = ", "),
+      call. = FALSE
+    )
   }
+  files <- files[match(paper_setting_order, file_settings)]
 
   fits <- lapply(files, make_paper_cp_plot)
   plots <- lapply(fits, function(fit) fit$plot + ggplot2::theme(legend.position = "none"))

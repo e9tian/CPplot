@@ -80,8 +80,8 @@ test_that("local_cp_plot returns weighted local CP diagnostics", {
   )
   fit <- local_cp_plot(data = df, e_hat = "e_hat", tau_c_hat = "tau_c", pi_c_hat = "pi_c", iv = "z")
   expect_s3_class(fit, "CPplot_result")
-  expect_equal(levels(fit$data_used$group), c("Control", "Treated"))
-  expect_equal(fit$slopes$fit, c("Complier weighted", "Treated-complier weighted", "Control-complier weighted"))
+  expect_equal(levels(fit$data_used$group), c("Unencouraged", "Encouraged"))
+  expect_equal(fit$slopes$fit, c("Complier weighted", "Encouraged-complier weighted", "Unencouraged-complier weighted"))
   expect_true(is.data.frame(fit$bracketing))
   point_layer <- ggplot2::ggplot_build(fit$plot)$data[[1L]]
   expect_setequal(unique(point_layer$colour), c("#D55E00", "#0072B2"))
@@ -100,7 +100,7 @@ test_that("local_cp_plot estimates inputs from an IV formula", {
   fit <- local_cp_plot(y ~ d + x1 + x2 | z + x1 + x2, data = df)
 
   expect_s3_class(fit, "CPplot_result")
-  expect_equal(levels(fit$data_used$group), c("Control", "Treated"))
+  expect_equal(levels(fit$data_used$group), c("Unencouraged", "Encouraged"))
   expect_true(all(c("e_hat", "tau_c_hat", "pi_c_hat") %in% names(fit$data_used)))
   expect_true(is.data.frame(fit$bracketing))
 })

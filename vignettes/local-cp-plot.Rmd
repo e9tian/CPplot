@@ -23,3 +23,7 @@ fit$plot
 fit$slopes
 fit$bracketing
 ```
+
+By default, points with `z = 0` are labeled `Unencouraged`, and points with
+`z = 1` are labeled `Encouraged`. The corresponding tilted fits are reported as
+`Encouraged-complier weighted` and `Unencouraged-complier weighted`.

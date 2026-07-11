@@ -2,7 +2,7 @@ local_cp_plot <- function(formula = NULL, data, e_hat = NULL,
                           tau_c_hat = NULL, pi_c_hat = NULL, iv = NULL,
                           e_method = "logistic", contrast_method = "ols",
                           min_first_stage = 1e-6,
-                          point_labels = c("Control", "Treated"),
+                          point_labels = c("Unencouraged", "Encouraged"),
                           title = NULL, alpha = 0.35, point_size = 0.8) {
   point_labels <- validate_point_labels(point_labels)
   if (missing(data)) {
@@ -107,10 +107,10 @@ local_cp_plot <- function(formula = NULL, data, e_hat = NULL,
     ggplot2::theme(
       legend.position = "bottom",
       legend.box = "horizontal",
-      legend.text = ggplot2::element_text(size = 8),
-      legend.title = ggplot2::element_text(size = 9),
-      legend.key.width = grid::unit(0.7, "cm"),
-      legend.spacing.x = grid::unit(0.08, "cm")
+      legend.text = ggplot2::element_text(size = 7.2),
+      legend.title = ggplot2::element_text(size = 8.2),
+      legend.key.width = grid::unit(0.55, "cm"),
+      legend.spacing.x = grid::unit(0.03, "cm")
     ) +
     ggplot2::guides(
       shape = ggplot2::guide_legend(
