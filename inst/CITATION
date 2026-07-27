@@ -1,19 +1,10 @@
-citHeader("To cite CPplot, please cite the paper that introduced the CP-plot diagnostics:")
+citHeader("Associated manuscript:")
 
 bibentry(
   bibtype = "Misc",
-  key = "tian-yang-ding-2026-bracketing",
-  title = "Bracketing Relationships of Weighted Average Treatment Effects",
-  author = c(
-    person("Pengfei", "Tian"),
-    person("Fan", "Yang"),
-    person("Peng", "Ding")
-  ),
+  key = "anonymous-cpplot-manuscript",
+  title = "Introducing the CP-plot Based on Covariance Representations of Weighted Average Treatment Effects",
+  author = person("Anonymous"),
   year = "2026",
-  eprint = "2606.11715",
-  archivePrefix = "arXiv",
-  doi = "10.48550/arXiv.2606.11715",
-  url = "https://arxiv.org/abs/2606.11715",
-  note = "arXiv:2606.11715",
-  textVersion = "Tian, P., Yang, F., & Ding, P. (2026). Bracketing Relationships of Weighted Average Treatment Effects. arXiv preprint arXiv:2606.11715."
+  textVersion = "Introducing the CP-plot Based on Covariance Representations of Weighted Average Treatment Effects"
 )

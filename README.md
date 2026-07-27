@@ -12,14 +12,10 @@ diagnose bracketing relationships among weighted causal estimands. The package
 also implements local CP-plots for instrumental-variable analyses of weighted
 local average treatment effects.
 
-Reference:
+Associated manuscript:
 
-> Tian, P., Yang, F., & Ding, P. (2026). Bracketing Relationships of Weighted
-> Average Treatment Effects. arXiv preprint arXiv:2606.11715.
-
-Paper link: <https://arxiv.org/abs/2606.11715>
-
-Tutorial website: <https://e9tian.github.io/CPplot/>
+> *Introducing the CP-plot Based on Covariance Representations of Weighted
+> Average Treatment Effects*
 
 The main plotting functions work directly from familiar R formulas. Users who
 already estimated nuisance functions can also pass those fitted columns
@@ -27,11 +23,11 @@ directly.
 
 ## Installation
 
-Install from GitHub:
+From the package source directory:
 
 ```r
-install.packages("remotes")
-remotes::install_github("e9tian/CPplot")
+install.packages(".", repos = NULL, type = "source")
+library(CPplot)
 ```
 
 ## Observational CP Plot

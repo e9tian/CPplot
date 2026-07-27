@@ -2,14 +2,14 @@ Package: CPplot
 Title: Causal CP-Plot Diagnostics
 Version: 0.0.0.9000
 Authors@R: c(
-    person("Pengfei", "Tian", email = "e9tian@gmail.com", role = c("aut", "cre")),
-    person("Fan", "Yang", role = "aut"),
-    person("Peng", "Ding", role = "aut")
+    person(
+      "Anonymous", "Authors",
+      email = "anonymous@example.invalid",
+      role = c("aut", "cre")
+    )
   )
-Author: Pengfei Tian [aut, cre],
-  Fan Yang [aut],
-  Peng Ding [aut]
-Maintainer: Pengfei Tian <e9tian@gmail.com>
+Author: Anonymous Authors [aut, cre]
+Maintainer: Anonymous Authors <anonymous@example.invalid>
 Description: Implements CP-plots of estimated conditional average treatment
     effects against estimated propensity scores. Motivated by covariance
     representations for weighted average treatment effects, these plots
@@ -17,11 +17,9 @@ Description: Implements CP-plots of estimated conditional average treatment
     propensity and help diagnose bracketing relationships among weighted causal
     estimands. The package also implements local CP-plots for instrumental
     variable analyses of weighted local average treatment effects and
-    accompanies Tian, P., Yang, F., & Ding, P. (2026). Bracketing
-    Relationships of Weighted Average Treatment Effects. arXiv preprint
-    arXiv:2606.11715.
+    accompanies the manuscript "Introducing the CP-plot Based on Covariance
+    Representations of Weighted Average Treatment Effects."
 License: MIT + file LICENSE
-URL: https://arxiv.org/abs/2606.11715
 Depends:
     R (>= 3.5.0)
 Encoding: UTF-8

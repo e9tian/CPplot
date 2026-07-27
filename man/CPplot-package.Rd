@@ -9,7 +9,6 @@ weighted average treatment effects, these plots summarize how treatment-effect
 heterogeneity varies with treatment propensity and help diagnose bracketing
 relationships among weighted causal estimands. The package also implements
 local CP-plots for instrumental-variable analyses of weighted local average
-treatment effects and accompanies Tian, P., Yang, F., \& Ding, P. (2026).
-Bracketing Relationships of Weighted Average Treatment Effects. arXiv preprint
-arXiv:2606.11715.
+treatment effects and accompanies the manuscript \emph{Introducing the CP-plot
+Based on Covariance Representations of Weighted Average Treatment Effects}.
 }
