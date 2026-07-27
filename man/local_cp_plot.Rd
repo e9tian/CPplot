@@ -23,8 +23,8 @@ fitted-input mode.}
 \code{"random_forest"}.}
 \item{contrast_method}{Conditional reduced-form and first-stage method. One of
 \code{"ols"} or \code{"random_forest"}.}
-\item{min_first_stage}{First-stage threshold used to set unstable conditional
-Wald ratios to missing in formula mode.}
+\item{min_first_stage}{First-stage threshold used to set unstable plug-in
+conditional complier-effect estimates to missing in formula mode.}
 \item{point_labels}{Two labels for unencouraged and encouraged points.}
 \item{title}{Optional plot title.}
 \item{alpha}{Point alpha.}
@@ -35,8 +35,8 @@ A \code{CPplot_result} object with elements \code{plot}, \code{slopes},
 \code{bracketing}, \code{bracketing_summary}, and \code{data_used}.
 }
 \description{
-Draws a diagnostic plot of modeled conditional Wald estimates against estimated
-IV propensity scores and adds full-sample weighted linear fits with weights
+Draws a diagnostic plot of plug-in conditional complier-effect estimates against
+estimated IV propensity scores and adds full-sample weighted linear fits with weights
 \eqn{\hat\pi^c(X)}, \eqn{\hat\pi^c(X)\hat e(X)}, and
 \eqn{\hat\pi^c(X)\{1-\hat e(X)\}}. Users can either supply an IV formula for
 default estimation or supply precomputed \code{e_hat}, \code{tau_c_hat}, and

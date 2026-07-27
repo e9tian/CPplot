@@ -39,7 +39,7 @@ paper_datasets <- function() {
     type = "local_cp_iv",
     treatment_column = "Z",
     loader = "load_paper_401k_data()",
-    description = "Unit-level modeled conditional Wald estimates for the 401(k) local CP plot.",
+    description = "Unit-level plug-in conditional complier-effect estimates for the 401(k) local CP plot.",
     stringsAsFactors = FALSE
   )
 
@@ -96,7 +96,7 @@ load_paper_cp_data <- function(setting) {
 }
 
 load_paper_401k_data <- function() {
-  file <- file.path(paper_data_dir(), "tab_401k_unit_conditional_wald.csv")
+  file <- file.path(paper_data_dir(), "tab_401k_unit_plugin_inputs.csv")
   if (!file.exists(file)) {
     stop("Cannot find bundled 401(k) data file: ", file, call. = FALSE)
   }

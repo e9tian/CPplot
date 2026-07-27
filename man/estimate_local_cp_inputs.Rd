@@ -17,7 +17,7 @@ estimate_local_cp_inputs(data, outcome, treatment, instrument, covariates,
 \item{contrast_method}{Conditional contrast method. One of \code{"ols"} or
 \code{"random_forest"}.}
 \item{family}{Family passed to \code{stats::glm()} for the IV propensity score.}
-\item{min_first_stage}{Minimum absolute first stage used before setting the Wald ratio to \code{NA}.}
+\item{min_first_stage}{Minimum absolute first stage used before setting an unstable plug-in conditional complier-effect estimate to \code{NA}.}
 }
 \value{
 The input data frame with added \code{e_hat}, \code{delta_y}, \code{delta_d},

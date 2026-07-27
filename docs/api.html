@@ -128,7 +128,7 @@
               <tr><td><code>iv</code></td><td>Optional 0/1 IV column for point shapes in fitted-input mode.</td></tr>
               <tr><td><code>e_method</code></td><td><code>logistic</code> or <code>random_forest</code>.</td></tr>
               <tr><td><code>contrast_method</code></td><td><code>ols</code> or <code>random_forest</code>.</td></tr>
-              <tr><td><code>min_first_stage</code></td><td>Threshold for setting unstable conditional Wald ratios to missing in formula mode.</td></tr>
+              <tr><td><code>min_first_stage</code></td><td>Threshold for setting unstable plug-in conditional complier-effect estimates to missing in formula mode.</td></tr>
               <tr><td><code>point_labels</code>, <code>title</code>, <code>alpha</code>, <code>point_size</code></td><td>Optional labels and styling. Point labels default to <code>Unencouraged</code> for IV = 0 and <code>Encouraged</code> for IV = 1.</td></tr>
             </tbody>
           </table>
@@ -145,7 +145,7 @@
               <h3>Mode 2: pass fitted inputs directly</h3>
               <p>
                 Use this when you already have estimated IV propensity scores,
-                conditional Wald estimates, and complier weights.
+                plug-in conditional complier-effect estimates, and complier weights.
               </p>
               <pre><button class="copy" type="button">Copy</button><code>fit <- local_cp_plot(
   data = df,
@@ -213,7 +213,7 @@ load_paper_401k_data()</code></pre>
             <tbody>
               <tr><td><code>paper_datasets()</code></td><td>Dataset index with name, type, treatment column, loader, and description.</td></tr>
               <tr><td><code>load_paper_cp_data(setting)</code></td><td>One observational paper-demo dataset with <code>propensity_scores</code>, <code>tau_hat</code>, and the treatment column.</td></tr>
-              <tr><td><code>load_paper_401k_data()</code></td><td>The 401(k) local CP dataset with <code>e_hat</code>, <code>Z</code>, <code>delta_d</code>, and <code>tau_c_hat</code>.</td></tr>
+              <tr><td><code>load_paper_401k_data()</code></td><td>The 401(k) plug-in local CP dataset with <code>e_hat</code>, <code>Z</code>, <code>delta_y</code>, <code>delta_d</code>, and <code>tau_c_hat</code>.</td></tr>
             </tbody>
           </table>
         </section>

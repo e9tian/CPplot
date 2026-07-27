@@ -139,7 +139,11 @@ fit$bracketing_summary</code></pre>
             <code>z</code> is the binary IV, and <code>x</code> is a covariate,
             a local CP plot can be drawn with
             <code>local_cp_plot(y ~ d + x | z + x, data = df)</code>. The
-            example below uses three covariates in the same way. By default,
+            example below uses three covariates in the same way. In formula
+            mode, CPplot estimates the IV propensity score and both conditional
+            contrasts, then forms the plug-in inputs
+            <code>pi_c_hat = delta_d</code> and
+            <code>tau_c_hat = delta_y / delta_d</code>. By default,
             points with <code>z = 0</code> are labeled
             <code>Unencouraged</code>, and points with <code>z = 1</code> are
             labeled <code>Encouraged</code>.

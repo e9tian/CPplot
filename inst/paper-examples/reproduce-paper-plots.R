@@ -3,7 +3,7 @@
 # By default, this script uses the paper intermediate outputs bundled with the
 # package:
 # - res_data/*_data.RData
-# - tab_401k_unit_conditional_wald.csv
+# - tab_401k_unit_plugin_inputs.csv
 #
 # Example:
 # source(system.file("paper-examples/reproduce-paper-plots.R", package = "CPplot"))
@@ -168,7 +168,7 @@ make_observational_cp_panel <- function(paper_dir, output_dir) {
 }
 
 make_401k_local_cp_plot <- function(paper_dir, output_dir) {
-  csv_file <- file.path(paper_dir, "tab_401k_unit_conditional_wald.csv")
+  csv_file <- file.path(paper_dir, "tab_401k_unit_plugin_inputs.csv")
   if (!file.exists(csv_file)) {
     stop("Cannot find ", csv_file, call. = FALSE)
   }
@@ -189,10 +189,10 @@ make_401k_local_cp_plot <- function(paper_dir, output_dir) {
     title = expression(paste("401(k) application: local CP plot of ", hat(tau)^c * (X), " vs ", hat(e)(X)))
   )
 
-  pdf_file <- file.path(output_dir, "fig_401k_unit_conditional_wald_CPplot.pdf")
+  pdf_file <- file.path(output_dir, "fig_401k_unit_plugin_local_cp.pdf")
   ggplot2::ggsave(pdf_file, fit$plot, width = 8.5, height = 5)
 
-  slopes_file <- file.path(output_dir, "fig_401k_unit_conditional_wald_CPplot_slopes.csv")
+  slopes_file <- file.path(output_dir, "fig_401k_unit_plugin_local_cp_slopes.csv")
   utils::write.csv(fit$slopes, slopes_file, row.names = FALSE)
 
   list(plot_file = pdf_file, slopes_file = slopes_file, slopes = fit$slopes)

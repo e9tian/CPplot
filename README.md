@@ -79,7 +79,10 @@ The returned object has five main components:
 For IV studies, if `y` is the outcome, `d` is the treatment, `z` is the binary
 IV, and `x` is a covariate, a local CP plot can be drawn with
 `local_cp_plot(y ~ d + x | z + x, data = df)`. The example below uses two
-covariates in the same way.
+covariates in the same way. In formula mode, CPplot estimates the IV propensity
+score and the two conditional contrasts, then forms plug-in estimates
+\(\hat\pi_i^c=\widehat\tau_D(X_i)\) and
+\(\hat\tau_i^c=\widehat\tau_Y(X_i)/\widehat\tau_D(X_i)\).
 
 ```r
 set.seed(2)
@@ -126,7 +129,7 @@ fit <- cp_plot(
 )
 ```
 
-For a local CP plot with precomputed local IV inputs:
+For a local CP plot with precomputed plug-in local IV inputs:
 
 ```r
 set.seed(4)
